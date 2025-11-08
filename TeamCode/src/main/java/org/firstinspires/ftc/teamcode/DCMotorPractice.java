@@ -4,24 +4,21 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.mechanisms.TestMotor;
+
 @Disabled
 @TeleOp
-public class IfPractice extends OpMode {
+public class DCMotorPractice extends OpMode {
+    TestMotor bench = new TestMotor();
+
     @Override
     public void init() {
-
+        bench.init(hardwareMap);
     }
 
     @Override
     public void loop() {
-        double motorSpeed;
-
-        if (!gamepad1.a){
-            motorSpeed = gamepad1.left_stick_y * 0.5;
-        } else {
-            motorSpeed = gamepad1.left_stick_y;
-        }
-        telemetry.addData("Motor Speed", motorSpeed);
+        bench.setMotorSpeed(0.5);
+        telemetry.addData("Motor Revs", bench.getMotorRevs());
     }
 }
-
