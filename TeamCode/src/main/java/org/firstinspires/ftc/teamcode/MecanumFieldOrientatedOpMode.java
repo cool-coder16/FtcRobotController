@@ -25,9 +25,10 @@ public class MecanumFieldOrientatedOpMode extends OpMode {
         strafe = gamepad1.left_stick_x;
 
         drive.drive(forward, strafe, rotate);
+        drive.setFlywheel(power);
 
         if (gamepad1.b){
-            drive.shootBall(power);
+            drive.shootBall();
             drive.stopShoot();
         } else {
             drive.stopShoot();
@@ -49,8 +50,16 @@ public class MecanumFieldOrientatedOpMode extends OpMode {
             drive.intake();
         }
 
+        if (gamepad1.dpad_left || gamepad1.dpad_right){
+            drive.stopShoot();
+        }
+
         if (gamepad1.right_bumper){
             power = 0.55;
+        }
+
+        if (gamepad1.left_bumper){
+            power = 0;
         }
 
         telemetry.addData("Facing", drive.getDirectionFacing(AngleUnit.DEGREES));

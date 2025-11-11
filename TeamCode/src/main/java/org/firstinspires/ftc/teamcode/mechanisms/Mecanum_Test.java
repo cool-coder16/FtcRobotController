@@ -84,8 +84,7 @@ public class Mecanum_Test {
         this.drive(newForward, newStrafe, rotate);
     }
 
-    public void shootBall(double power){
-        shooting_motor.setPower(power);
+    public void shootBall(){
         push1.setPower(10.0);
         push2.setPower(10.0);
     }
@@ -103,7 +102,15 @@ public class Mecanum_Test {
         intake_motor.setPower(-1);
     }
 
+    public void stoptake(){
+        intake_motor.setPower(0);
+    }
+
     public double getDirectionFacing(AngleUnit unit){
         return imu.getRobotYawPitchRollAngles().getYaw(unit);
+    }
+
+    public void setFlywheel(double power){
+        shooting_motor.setPower(power);
     }
 }
