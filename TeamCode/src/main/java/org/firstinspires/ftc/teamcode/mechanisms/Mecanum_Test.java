@@ -1,15 +1,18 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Mecanum_Test {
     private DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, shooting_motor, intake_motor;
+    private CRServo push1, push2;
     private IMU imu;
 
     public void init(HardwareMap hwMap){
@@ -19,9 +22,12 @@ public class Mecanum_Test {
         back_left_motor = hwMap.get(DcMotor.class, "back_left_motor");
         shooting_motor = hwMap.get(DcMotor.class, "shooting_flywheel");
         intake_motor = hwMap.get(DcMotor.class, "intake");
+        push1 = hwMap.get(CRServo.class, "push1");
+        push2 = hwMap.get(CRServo.class, "push2");
 
-        front_left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        front_right_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         back_left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        push1.setDirection(DcMotorSimple.Direction.REVERSE);
 
         front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -59,6 +65,10 @@ public class Mecanum_Test {
         back_left_motor.setPower(maxSpeed * (backLeftPower/maxPower));
         front_right_motor.setPower(maxSpeed * (frontRightPower/maxPower));
         back_right_motor.setPower(maxSpeed * (backRightPower/maxPower));
+
+        shooting_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        shooting_motor.setPower(0.55);
     }
 
     public void driveFieldOriented(double forward, double strafe, double rotate){
@@ -76,5 +86,24 @@ public class Mecanum_Test {
 
     public void shootBall(double power){
         shooting_motor.setPower(power);
+        push1.setPower(10.0);
+        push2.setPower(10.0);
+    }
+
+    public void stopShoot(){
+        push1.setPower(0.0);
+        push2.setPower(0.0);
+    }
+
+    public void intake(){
+        intake_motor.setPower(1);
+    }
+
+    public void outtake(){
+        intake_motor.setPower(-1);
+    }
+
+    public double getDirectionFacing(AngleUnit unit){
+        return imu.getRobotYawPitchRollAngles().getYaw(unit);
     }
 }

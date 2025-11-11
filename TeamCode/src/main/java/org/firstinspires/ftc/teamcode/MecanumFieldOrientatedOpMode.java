@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.Mecanum_Test;
 
 @TeleOp
@@ -19,14 +20,17 @@ public class MecanumFieldOrientatedOpMode extends OpMode {
 
     @Override
     public void loop() {
-        forward = gamepad1.left_stick_y;
-        strafe = gamepad1.left_stick_x;
+        forward = -gamepad1.left_stick_y;
         rotate = gamepad1.right_stick_x;
+        strafe = gamepad1.left_stick_x;
 
-        drive.driveFieldOriented(forward, strafe, rotate);
+        drive.drive(forward, strafe, rotate);
 
         if (gamepad1.b){
             drive.shootBall(power);
+            drive.stopShoot();
+        } else {
+            drive.stopShoot();
         }
 
         if (gamepad1.a){
@@ -36,5 +40,19 @@ public class MecanumFieldOrientatedOpMode extends OpMode {
         if (gamepad1.x){
             power -= 0.05;
         }
+
+        if (gamepad1.dpad_down){
+            drive.outtake();
+        }
+
+        if (gamepad1.dpad_up){
+            drive.intake();
+        }
+
+        if (gamepad1.right_bumper){
+            power = 0.55;
+        }
+
+        telemetry.addData("Facing", drive.getDirectionFacing(AngleUnit.DEGREES));
     }
 }
