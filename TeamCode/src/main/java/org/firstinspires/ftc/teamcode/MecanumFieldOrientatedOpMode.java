@@ -28,11 +28,7 @@ public class MecanumFieldOrientatedOpMode extends OpMode {
         drive.setFlywheel(power);
 
         if (gamepad1.b){
-            drive.shootBall();
-            drive.stopShoot();
-        } else {
-            drive.stopShoot();
-        }
+            drive.shootBall();}
 
         if (gamepad1.a){
             power += 0.05;
@@ -51,7 +47,7 @@ public class MecanumFieldOrientatedOpMode extends OpMode {
         }
 
         if (gamepad1.dpad_left || gamepad1.dpad_right){
-            drive.stopShoot();
+            drive.stoptake();
         }
 
         if (gamepad1.right_bumper){
