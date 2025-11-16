@@ -10,13 +10,12 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @Disabled
 @TeleOp
-public class MecanumDrive extends OpMode {
+public class BlueTeamMecanum extends OpMode {
     MecanumBenchServo drive = new MecanumBenchServo();
     AprilTagWebcam aprilTag = new AprilTagWebcam();
     double forward, strafe, rotate, goalAngle;
 
     double power;
-    int team = -1; // Blue is 0, Red is 1
     boolean servosOn = false;
     AprilTagDetection goal;
 
@@ -25,35 +24,12 @@ public class MecanumDrive extends OpMode {
         drive.init(hardwareMap);
         aprilTag.init(hardwareMap, telemetry);
         power = 0.65;
-    }
-
-    @Override
-    public void init_loop() {
-        if (gamepad1.right_bumper){
-            team = 0;
-        } else if (gamepad1.left_bumper){
-            team = 1;
-        }
-
-        telemetry.addData("Team", "Right Bumper for Blue, Left Bumper for Red");
-        telemetry.addData("0", "blue");
-        telemetry.addData("1", "red");
-        telemetry.addData("-1", "Choose");
-        telemetry.addData("Team", team);
+        goalAngle = 45;
+        goal = aprilTag.getTagById(20);
     }
 
     @Override
     public void loop() {
-        if (team == -1){
-            throw new RuntimeException("Choose Team");
-        } else if (team == 0){
-            goalAngle = 45;
-            goal = aprilTag.getTagById(20);
-        } else if (team == 1){
-            goalAngle = -45;
-            goal = aprilTag.getTagById(24);
-        }
-
         if (0.5<=gamepad1.left_stick_y ||-0.5>=gamepad1.left_stick_y){
             forward = -gamepad1.left_stick_y;
         } else {
