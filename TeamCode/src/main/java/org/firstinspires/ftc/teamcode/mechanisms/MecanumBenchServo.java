@@ -117,26 +117,6 @@ public class MecanumBenchServo {
         shooting_motor.setPower(power);
     }
 
-    public void turnToDirection(double wantedAngle){
-        // Needs to turn the robot until it is facing that angle. Used for pre-shoot auto orientation
-        double currentAngle = this.getDirectionFacing(AngleUnit.DEGREES);
-        int runs = 0;
-        while (currentAngle > wantedAngle + 5 || currentAngle < wantedAngle - 5){
-            if (currentAngle < wantedAngle){
-                this.drive(0.0, 0.0, 0.5);
-            } else {
-                this.drive(0.0, 0, -0.5);
-            }
-            runs += 1;
-            currentAngle = this.getDirectionFacing(AngleUnit.DEGREES);
-            if (runs > 30){
-                return;
-            }
-            this.drive(0, 0, 0);
-        }
-        this.drive(0, 0, 0);
-    }
-
     public double getServoPosition(){
         return push1.getPosition();
     }

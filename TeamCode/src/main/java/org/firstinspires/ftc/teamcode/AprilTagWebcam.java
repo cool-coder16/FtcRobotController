@@ -80,4 +80,31 @@ public class AprilTagWebcam{
             telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detectedId.center.x, detectedId.center.y));
         }
     }
-}
+
+    public double getWebcamYaw(AprilTagDetection detectedId){
+        if (detectedId == null){return 0.0; }
+        if (detectedId.metadata != null){
+            return detectedId.ftcPose.yaw;
+        } else {
+            return 0.0;
+        }
+    }
+
+    public double getWebcamDistance(AprilTagDetection detectedId){
+        if (detectedId == null){return 0.0; }
+        if (detectedId.metadata != null){
+            return detectedId.ftcPose.y;
+        } else {
+            return 0.0;
+        }
+    }
+
+    public double getWebcamStrafe(AprilTagDetection detectedId){
+        if (detectedId == null){return 0.0; }
+        if (detectedId.metadata != null){
+            return detectedId.ftcPose.x;
+        } else {
+            return 0.0;
+        }
+    }
+    }

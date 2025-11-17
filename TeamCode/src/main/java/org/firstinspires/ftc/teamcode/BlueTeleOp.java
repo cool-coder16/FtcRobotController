@@ -13,7 +13,45 @@ public class BlueTeleOp extends LinearOpMode {
     AprilTagWebcam aprilTag = new AprilTagWebcam();
     double forward, strafe, rotate, goalAngle;
     double power;
-    AprilTagDetection goal;
+    AprilTagDetection goal = aprilTag.getTagById(20);
+
+    public void autoShootOrient(){
+        double distance = aprilTag.getWebcamDistance(goal);
+        double yaw = aprilTag.getWebcamYaw(goal);
+        double x = aprilTag.getWebcamStrafe(goal);
+
+        double forwardPower = 0, strafePower = 0, rotatePower = 0;
+        int runs = 0;
+        while (runs < 30){
+            if (10.0 < yaw){
+                rotatePower = 1.0; // Adjust for correct direction
+            } else if (-10.0 > yaw) {
+                rotatePower = -1.0; // Same
+            }
+
+            if (10.0 < x){
+                strafePower = -1.0; // Same
+            } else if (-10.0 > x) {
+                strafePower = 1.0;
+            }
+
+            if (distance > 45){ // INPUT CORRECT DISTANCE HERE AFTER TESTING, and adjust negativity
+                forwardPower = 1.0;
+            } else if (distance < 35){
+                forwardPower = -1.0; // Do all above comments
+            }
+
+            drive.drive(forwardPower, strafePower, rotatePower);
+
+            forwardPower = 0;
+            strafePower = 0;
+            rotatePower = 0;
+
+            runs += 1;
+        }
+
+        drive.shootBall();
+    }
 
     @Override
     public void runOpMode(){
@@ -21,7 +59,6 @@ public class BlueTeleOp extends LinearOpMode {
         aprilTag.init(hardwareMap, telemetry);
         power = 0.65;
         goalAngle = 45;
-        goal = aprilTag.getTagById(20);
 
         waitForStart();
 
@@ -81,6 +118,10 @@ public class BlueTeleOp extends LinearOpMode {
 
             if (gamepad1.left_bumper){
                 power = 0;
+            }
+
+            if (gamepad1.left_trigger > 0.5){
+                this.autoShootOrient();
             }
 
             telemetry.addData("Facing", drive.getDirectionFacing(AngleUnit.DEGREES));
