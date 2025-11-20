@@ -68,7 +68,10 @@ public class AprilTagWebcam{
     }
 
     public void displayWebcamTelemetry(AprilTagDetection detectedId){
-        if (detectedId == null){return; }
+        if (detectedId == null){
+            telemetry.addData("April Tag", "None");
+            return;
+        }
 
         if (detectedId.metadata != null) {
             telemetry.addLine(String.format("\n==== (ID %d) %s", detectedId.id, detectedId.metadata.name));
@@ -91,11 +94,11 @@ public class AprilTagWebcam{
     }
 
     public double getWebcamDistance(AprilTagDetection detectedId){
-        if (detectedId == null){return 0.0; }
+        if (detectedId == null){return 40.0; }
         if (detectedId.metadata != null){
             return detectedId.ftcPose.y;
         } else {
-            return 0.0;
+            return 40.0;
         }
     }
 

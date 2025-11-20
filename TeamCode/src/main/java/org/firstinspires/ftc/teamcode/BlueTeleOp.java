@@ -16,13 +16,15 @@ public class BlueTeleOp extends LinearOpMode {
     AprilTagDetection goal = aprilTag.getTagById(20);
 
     public void autoShootOrient(){
-        double distance = aprilTag.getWebcamDistance(goal);
-        double yaw = aprilTag.getWebcamYaw(goal);
-        double x = aprilTag.getWebcamStrafe(goal);
+        double distance,yaw,x;
 
         double forwardPower = 0, strafePower = 0, rotatePower = 0;
         int runs = 0;
         while (runs < 30){
+            distance = aprilTag.getWebcamDistance(goal);
+            yaw = aprilTag.getWebcamYaw(goal);
+            x = aprilTag.getWebcamStrafe(goal);
+
             if (10.0 < yaw){
                 rotatePower = 1.0; // Adjust for correct direction
             } else if (-10.0 > yaw) {
@@ -36,9 +38,9 @@ public class BlueTeleOp extends LinearOpMode {
             }
 
             if (distance > 45){ // INPUT CORRECT DISTANCE HERE AFTER TESTING, and adjust negativity
-                forwardPower = 1.0;
+                forwardPower = -1.0;
             } else if (distance < 35){
-                forwardPower = -1.0; // Do all above comments
+                forwardPower = 1.0; // Do all above comments
             }
 
             drive.drive(forwardPower, strafePower, rotatePower);
@@ -50,6 +52,7 @@ public class BlueTeleOp extends LinearOpMode {
             runs += 1;
         }
 
+        drive.drive(0, 0, 0);
         drive.shootBall();
     }
 
@@ -63,7 +66,7 @@ public class BlueTeleOp extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
-            if (0.5<=gamepad1.left_stick_y ||-0.5>=gamepad1.left_stick_y){
+            if (0.5<=-gamepad1.left_stick_y ||-0.5>=-gamepad1.left_stick_y){
                 forward = -gamepad1.left_stick_y;
             } else {
                 forward = 0;
@@ -124,10 +127,14 @@ public class BlueTeleOp extends LinearOpMode {
                 this.autoShootOrient();
             }
 
+            if (gamepad1.right_stick_button){
+                drive.push1.setPosition(1.0);
+                drive.push1.setPosition(-1.0);
+            }
+
             telemetry.addData("Facing", drive.getDirectionFacing(AngleUnit.DEGREES));
             telemetry.addData("Rotate", rotate);
             telemetry.addData("Flywheel Speed", power);
-            telemetry.addData("April Tag", goal);
             aprilTag.displayWebcamTelemetry(goal);
             telemetry.update();
         }

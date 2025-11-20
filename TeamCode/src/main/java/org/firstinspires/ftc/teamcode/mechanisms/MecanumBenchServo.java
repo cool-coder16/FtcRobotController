@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class MecanumBenchServo {
     private DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, shooting_motor, intake_motor;
-    private Servo push1, push2;
+    public Servo push1, push2;
     private IMU imu;
 
     public void init(HardwareMap hwMap){
@@ -72,6 +72,7 @@ public class MecanumBenchServo {
         shooting_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         shooting_motor.setPower(0.55);
+        this.stopShoot();
     }
 
     public void driveFieldOriented(double forward, double strafe, double rotate){
