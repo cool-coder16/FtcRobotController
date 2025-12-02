@@ -11,7 +11,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 public class BlueTeleOp extends LinearOpMode {
     MecanumBenchServo drive = new MecanumBenchServo();
     AprilTagWebcam aprilTag = new AprilTagWebcam();
-    public double forward, strafe, rotate, goalAngle;
+    double forward, strafe, rotate, goalAngle;
     double power;
     AprilTagDetection goal = aprilTag.getTagById(20);
 
