@@ -13,19 +13,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class MecanumBenchServo {
     private DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, shooting_motor, intake_motor;
     public Servo push1, push2;
+    public CRServo transition;
     private IMU imu;
 
     public void init(HardwareMap hwMap){
-        front_right_motor = hwMap.get(DcMotor.class, "front_right_motor");
-        front_left_motor = hwMap.get(DcMotor.class, "front_left_motor");
-        back_right_motor = hwMap.get(DcMotor.class, "back_right_motor");
-        back_left_motor = hwMap.get(DcMotor.class, "back_left_motor");
-        shooting_motor = hwMap.get(DcMotor.class, "shooting_flywheel");
+        front_right_motor = hwMap.get(DcMotor.class, "frontright");
+        front_left_motor = hwMap.get(DcMotor.class, "frontleft");
+        back_right_motor = hwMap.get(DcMotor.class, "backright");
+        back_left_motor = hwMap.get(DcMotor.class, "backleft");
+        shooting_motor = hwMap.get(DcMotor.class, "shooter");
         intake_motor = hwMap.get(DcMotor.class, "intake");
 
 
         push1 = hwMap.get(Servo.class, "push1");
         push2 = hwMap.get(Servo.class, "push2");
+        transition = hwMap.get(CRServo.class, "transition");
 
         front_right_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         back_left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -48,6 +50,8 @@ public class MecanumBenchServo {
         imu.initialize(new IMU.Parameters(RevOrientation));
 
         intake_motor.setPower(1.0);
+
+        this.startTransition();
     }
 
     public void drive(double forward, double strafe, double rotate){
@@ -70,9 +74,6 @@ public class MecanumBenchServo {
         back_right_motor.setPower(maxSpeed * (backRightPower/maxPower));
 
         shooting_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        shooting_motor.setPower(0.55);
-        this.stopShoot();
     }
 
     public void driveFieldOriented(double forward, double strafe, double rotate){
@@ -96,6 +97,14 @@ public class MecanumBenchServo {
     public void stopShoot(){
         push1.setPosition(-1.0);
         push2.setPosition(-1.0);
+    }
+
+    public void startTransition(){
+        transition.setPower(1.0);
+    }
+
+    public void stopTransition(){
+        transition.setPower(0.0);
     }
 
     public void intake(){

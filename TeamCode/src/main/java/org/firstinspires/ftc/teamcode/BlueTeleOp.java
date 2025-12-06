@@ -10,56 +10,16 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 @TeleOp
 public class BlueTeleOp extends LinearOpMode {
     MecanumBenchServo drive = new MecanumBenchServo();
-    AprilTagWebcam aprilTag = new AprilTagWebcam();
+//    AprilTagWebcam aprilTag = new AprilTagWebcam();
     double forward, strafe, rotate, goalAngle;
     double power;
-    AprilTagDetection goal = aprilTag.getTagById(20);
 
-    public void autoShootOrient(){
-        double distance,yaw,x;
-
-        double forwardPower = 0, strafePower = 0, rotatePower = 0;
-        int runs = 0;
-        while (runs < 30){
-            distance = aprilTag.getWebcamDistance(goal);
-            yaw = aprilTag.getWebcamYaw(goal);
-            x = aprilTag.getWebcamStrafe(goal);
-
-            if (10.0 < yaw){
-                rotatePower = 1.0; // Adjust for correct direction
-            } else if (-10.0 > yaw) {
-                rotatePower = -1.0; // Same
-            }
-
-            if (10.0 < x){
-                strafePower = -1.0; // Same
-            } else if (-10.0 > x) {
-                strafePower = 1.0;
-            }
-
-            if (distance > 45){ // INPUT CORRECT DISTANCE HERE AFTER TESTING, and adjust negativity
-                forwardPower = -1.0;
-            } else if (distance < 35){
-                forwardPower = 1.0; // Do all above comments
-            }
-
-            drive.drive(forwardPower, strafePower, rotatePower);
-
-            forwardPower = 0;
-            strafePower = 0;
-            rotatePower = 0;
-
-            runs += 1;
-        }
-
-        drive.drive(0, 0, 0);
-        drive.shootBall();
-    }
+    boolean transition = true;
 
     @Override
     public void runOpMode(){
         drive.init(hardwareMap);
-        aprilTag.init(hardwareMap, telemetry);
+//        aprilTag.init(hardwareMap, telemetry);
         power = 0.65;
         goalAngle = 45;
 
@@ -82,12 +42,8 @@ public class BlueTeleOp extends LinearOpMode {
                 rotate = 0;
             }
 
-
-
             drive.drive(forward, strafe, rotate);
             drive.setFlywheel(power);
-
-            aprilTag.updateWebcam();
 
             if (gamepad1.bWasPressed()){
                 drive.shootBall();
@@ -123,8 +79,14 @@ public class BlueTeleOp extends LinearOpMode {
                 power = 0;
             }
 
-            if (gamepad1.left_trigger > 0.5){
-                this.autoShootOrient();
+            if(gamepad1.left_trigger > 0.5){
+                if (transition){
+                    drive.stopTransition();
+                    transition = false;
+                } else {
+                    drive.startTransition();
+                    transition = true;
+                }
             }
 
             if (gamepad1.right_stick_button){
@@ -135,7 +97,7 @@ public class BlueTeleOp extends LinearOpMode {
             telemetry.addData("Facing", drive.getDirectionFacing(AngleUnit.DEGREES));
             telemetry.addData("Rotate", rotate);
             telemetry.addData("Flywheel Speed", power);
-            aprilTag.displayWebcamTelemetry(goal);
+//            aprilTag.displayWebcamTelemetry(goal);
             telemetry.update();
         }
     }
