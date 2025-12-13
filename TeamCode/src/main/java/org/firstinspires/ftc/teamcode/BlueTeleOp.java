@@ -80,13 +80,16 @@ public class BlueTeleOp extends LinearOpMode {
             }
 
             if(gamepad1.left_trigger > 0.5){
-                if (transition){
-                    drive.stopTransition();
-                    transition = false;
-                } else {
-                    drive.startTransition();
-                    transition = true;
-                }
+//                if (transition){
+//                    drive.stopTransition();
+//                    transition = false;
+//                } else {
+//                    drive.startTransition();
+//                    transition = true;
+//                }
+                drive.startTransition();
+                sleep(500);
+                drive.stopTransition();
             }
 
             if (gamepad1.right_stick_button){

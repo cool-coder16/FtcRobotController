@@ -30,9 +30,11 @@ public class MecanumBenchServo {
         transition = hwMap.get(CRServo.class, "transition");
 
         front_right_motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        front_left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         back_left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         shooting_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         push1.setDirection(Servo.Direction.REVERSE);
+        transition.setDirection(DcMotorSimple.Direction.REVERSE);
 
         front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -49,7 +51,7 @@ public class MecanumBenchServo {
 
         imu.initialize(new IMU.Parameters(RevOrientation));
 
-        intake_motor.setPower(1.0);
+        intake_motor.setPower(10.0);
 
         this.startTransition();
     }
@@ -108,11 +110,11 @@ public class MecanumBenchServo {
     }
 
     public void intake(){
-        intake_motor.setPower(1);
+        intake_motor.setPower(1.0);
     }
 
     public void outtake(){
-        intake_motor.setPower(-1);
+        intake_motor.setPower(-1.0);
     }
 
     public void stoptake(){
