@@ -30,7 +30,7 @@ public class MecanumBenchServo {
         transition = hwMap.get(CRServo.class, "transition");
 
         front_right_motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        front_left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        //front_left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         back_left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         shooting_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         push1.setDirection(Servo.Direction.REVERSE);
