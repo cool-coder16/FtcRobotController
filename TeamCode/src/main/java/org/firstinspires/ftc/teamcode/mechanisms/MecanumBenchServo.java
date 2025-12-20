@@ -14,16 +14,17 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
+//import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class MecanumBenchServo {
-    private DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, shooting_motor, intake_motor;
-    public Servo push1, push2;
+    public DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, intake_motor;
+//    private DcMotor shooting_motor;
+//    public Servo push1, push2;
     public CRServo upPusher;
     private IMU imu;
-    public double intakeSpeed = 0.075;
+    public double intakeSpeed = 1; //0.075
     public void init(HardwareMap hwMap){
         front_right_motor = hwMap.get(DcMotor.class, "frontright");
         front_left_motor = hwMap.get(DcMotor.class, "frontleft");
@@ -43,7 +44,7 @@ public class MecanumBenchServo {
 //        push1.setDirection(Servo.Direction.REVERSE);
 
         front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        back_left_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        shooting_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
