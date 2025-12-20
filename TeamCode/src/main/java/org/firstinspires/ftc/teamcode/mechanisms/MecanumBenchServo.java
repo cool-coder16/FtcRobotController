@@ -1,3 +1,11 @@
+/// This is the drive code. It gives functions to control the various parts of the robot, such as
+/// * The flywheel
+/// * The intake
+/// * The pushers
+/// * Speed
+/// * Mecanum wheels
+/// This code gets combined with the main code, which uses the functions with the gamepad.
+
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -13,34 +21,32 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class MecanumBenchServo {
     private DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, shooting_motor, intake_motor;
     public Servo push1, push2;
-    public CRServo transition;
+    public CRServo upPusher;
     private IMU imu;
-
+    public double intakeSpeed = 0.075;
     public void init(HardwareMap hwMap){
         front_right_motor = hwMap.get(DcMotor.class, "frontright");
         front_left_motor = hwMap.get(DcMotor.class, "frontleft");
         back_right_motor = hwMap.get(DcMotor.class, "backright");
         back_left_motor = hwMap.get(DcMotor.class, "backleft");
-        shooting_motor = hwMap.get(DcMotor.class, "shooter");
+//        shooting_motor = hwMap.get(DcMotor.class, "shooter");
         intake_motor = hwMap.get(DcMotor.class, "intake");
 
 
-        push1 = hwMap.get(Servo.class, "push1");
-        push2 = hwMap.get(Servo.class, "push2");
-        transition = hwMap.get(CRServo.class, "transition");
+//        push1 = hwMap.get(Servo.class, "push1");
+//        push2 = hwMap.get(Servo.class, "push2");
+        upPusher = hwMap.get(CRServo.class, "upPush");
 
         front_right_motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        //front_left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         back_left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        shooting_motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        push1.setDirection(Servo.Direction.REVERSE);
-        transition.setDirection(DcMotorSimple.Direction.REVERSE);
+//        shooting_motor.setDirection(DcMotorSimple.Direction.REVERSE);
+//        push1.setDirection(Servo.Direction.REVERSE);
 
         front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooting_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        shooting_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         imu = hwMap.get(IMU.class, "imu"); // NAME THIS
@@ -51,9 +57,7 @@ public class MecanumBenchServo {
 
         imu.initialize(new IMU.Parameters(RevOrientation));
 
-        intake_motor.setPower(10.0);
-
-        this.startTransition();
+        intake_motor.setPower(intakeSpeed);
     }
 
     public void drive(double forward, double strafe, double rotate){
@@ -75,7 +79,7 @@ public class MecanumBenchServo {
         front_right_motor.setPower(maxSpeed * (frontRightPower/maxPower));
         back_right_motor.setPower(maxSpeed * (backRightPower/maxPower));
 
-        shooting_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        shooting_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void driveFieldOriented(double forward, double strafe, double rotate){
@@ -91,30 +95,30 @@ public class MecanumBenchServo {
         this.drive(newForward, newStrafe, rotate);
     }
 
+    public void pushBallUp(){
+        upPusher.setPower(1.0);
+    }
+
+    public void stopBallUp(){
+        upPusher.setPower(0.0);
+    }
+
     public void shootBall(){
-        push1.setPosition(1.0);
-        push2.setPosition(1.0);
+//        push1.setPosition(1.0);
+//        push2.setPosition(1.0);
     }
 
     public void stopShoot(){
-        push1.setPosition(-1.0);
-        push2.setPosition(-1.0);
-    }
-
-    public void startTransition(){
-        transition.setPower(1.0);
-    }
-
-    public void stopTransition(){
-        transition.setPower(0.0);
+//        push1.setPosition(-1.0);
+//        push2.setPosition(-1.0);
     }
 
     public void intake(){
-        intake_motor.setPower(1.0);
+        intake_motor.setPower(intakeSpeed);
     }
 
     public void outtake(){
-        intake_motor.setPower(-1.0);
+        intake_motor.setPower(-intakeSpeed);
     }
 
     public void stoptake(){
@@ -126,10 +130,11 @@ public class MecanumBenchServo {
     }
 
     public void setFlywheel(double power){
-        shooting_motor.setPower(power);
+//        shooting_motor.setPower(power);
     }
 
     public double getServoPosition(){
-        return push1.getPosition();
+//        return push1.getPosition();
+        return 0.0;
     }
 }

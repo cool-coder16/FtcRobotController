@@ -3,23 +3,17 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumBenchServo;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @TeleOp
 public class BlueTeleOp extends LinearOpMode {
     MecanumBenchServo drive = new MecanumBenchServo();
-//    AprilTagWebcam aprilTag = new AprilTagWebcam();
     double forward, strafe, rotate, goalAngle;
     double power;
-
-    boolean transition = true;
 
     @Override
     public void runOpMode(){
         drive.init(hardwareMap);
-//        aprilTag.init(hardwareMap, telemetry);
         power = 0.65;
         goalAngle = 45;
 
@@ -43,12 +37,12 @@ public class BlueTeleOp extends LinearOpMode {
             }
 
             drive.drive(forward, strafe, rotate);
-            drive.setFlywheel(power);
+//            drive.setFlywheel(power);
 
             if (gamepad1.bWasPressed()){
-                drive.shootBall();
+                drive.pushBallUp();
                 sleep(700);
-                drive.stopShoot();
+                drive.stopBallUp();
             }
 
             if (gamepad1.aWasPressed()){
@@ -75,32 +69,11 @@ public class BlueTeleOp extends LinearOpMode {
                 power = 0.65;
             }
 
-            if (gamepad1.left_bumper){
+            if (gamepad1.left_bumper) {
                 power = 0;
             }
 
-            if(gamepad1.left_trigger > 0.5){
-//                if (transition){
-//                    drive.stopTransition();
-//                    transition = false;
-//                } else {
-//                    drive.startTransition();
-//                    transition = true;
-//                }
-                drive.startTransition();
-                sleep(500);
-                drive.stopTransition();
-            }
-
-            if (gamepad1.right_stick_button){
-                drive.push1.setPosition(1.0);
-                drive.push1.setPosition(-1.0);
-            }
-
-            telemetry.addData("Facing", drive.getDirectionFacing(AngleUnit.DEGREES));
-            telemetry.addData("Rotate", rotate);
-            telemetry.addData("Flywheel Speed", power);
-//            aprilTag.displayWebcamTelemetry(goal);
+//            telemetry.addData("Flywheel Speed", power);
             telemetry.update();
         }
     }
