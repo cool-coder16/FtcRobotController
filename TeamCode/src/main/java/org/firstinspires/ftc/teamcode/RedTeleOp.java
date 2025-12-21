@@ -85,7 +85,6 @@ public class RedTeleOp extends LinearOpMode {
                 power = 0;
             }
 
-            telemetry.addData("Facing", drive.getDirectionFacing(AngleUnit.DEGREES));
             telemetry.addData("Rotate", rotate);
             telemetry.addData("Flywheel Speed", power);
             telemetry.addData("April Tag", goal);

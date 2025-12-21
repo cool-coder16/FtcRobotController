@@ -8,13 +8,10 @@
 
 package org.firstinspires.ftc.teamcode.mechanisms;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
-//import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -23,7 +20,6 @@ public class MecanumBenchServo {
 //    private DcMotor shooting_motor;
 //    public Servo push1, push2;
     public CRServo upPusher;
-    private IMU imu;
     public double intakeSpeed = 1; //0.075
     public void init(HardwareMap hwMap){
         front_right_motor = hwMap.get(DcMotor.class, "frontright");
@@ -40,23 +36,13 @@ public class MecanumBenchServo {
 
         front_right_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         back_left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
-//        shooting_motor.setDirection(DcMotorSimple.Direction.REVERSE);
-//        push1.setDirection(Servo.Direction.REVERSE);
-
+        upPusher.setDirection(DcMotorSimple.Direction.REVERSE);
         front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_left_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        shooting_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        imu = hwMap.get(IMU.class, "imu"); // NAME THIS
-
-        RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
-
-        imu.initialize(new IMU.Parameters(RevOrientation));
 
         intake_motor.setPower(intakeSpeed);
     }
@@ -83,25 +69,16 @@ public class MecanumBenchServo {
 //        shooting_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void driveFieldOriented(double forward, double strafe, double rotate){
-        double theta = Math.atan2(forward, strafe);
-        double r = Math.hypot(strafe, forward);
-
-        theta = AngleUnit.normalizeRadians(theta -
-                imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
-
-        double newForward = r * Math.sin(theta);
-        double newStrafe = r * Math.cos(theta);
-
-        this.drive(newForward, newStrafe, rotate);
-    }
-
     public void pushBallUp(){
         upPusher.setPower(1.0);
     }
 
     public void stopBallUp(){
         upPusher.setPower(0.0);
+    }
+
+    public void pushBallDown(){
+        upPusher.setPower(-1.0);
     }
 
     public void shootBall(){
@@ -124,10 +101,6 @@ public class MecanumBenchServo {
 
     public void stoptake(){
         intake_motor.setPower(0);
-    }
-
-    public double getDirectionFacing(AngleUnit unit){
-        return imu.getRobotYawPitchRollAngles().getYaw(unit);
     }
 
     public void setFlywheel(double power){

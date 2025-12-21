@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.configuration.annotations.DigitalIoDeviceType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumBenchServo;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
+@Deprecated
 @Disabled
 @TeleOp
 public class BlueTeamMecanum extends OpMode {
@@ -102,7 +104,6 @@ public class BlueTeamMecanum extends OpMode {
 //            drive.turnToDirection(goalAngle);
 //        }
 
-        telemetry.addData("Facing", drive.getDirectionFacing(AngleUnit.DEGREES));
         telemetry.addData("Rotate", rotate);
         telemetry.addData("Flywheel Speed", power);
         telemetry.addData("April Tag", goal);

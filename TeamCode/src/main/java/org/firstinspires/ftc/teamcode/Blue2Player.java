@@ -78,7 +78,6 @@ public class Blue2Player extends LinearOpMode{
                     power = 0;
                 }
 
-                telemetry.addData("Facing", drive.getDirectionFacing(AngleUnit.DEGREES));
                 telemetry.addData("Rotate", rotate);
                 telemetry.addData("Flywheel Speed", power);
                 telemetry.addLine("Gamepad 1 for driving and intake/outtake");

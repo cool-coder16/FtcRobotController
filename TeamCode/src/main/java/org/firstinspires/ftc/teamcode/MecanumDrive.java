@@ -126,7 +126,6 @@ public class MecanumDrive extends OpMode {
 //            drive.turnToDirection(goalAngle);
 //        }
 
-        telemetry.addData("Facing", drive.getDirectionFacing(AngleUnit.DEGREES));
         telemetry.addData("Rotate", rotate);
         telemetry.addData("Flywheel Speed", power);
         telemetry.addData("April Tag", goal);

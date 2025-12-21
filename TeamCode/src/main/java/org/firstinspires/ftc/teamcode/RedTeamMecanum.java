@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumBenchServo;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
+@Deprecated
 @Disabled
 @TeleOp
 public class RedTeamMecanum extends OpMode {
@@ -102,8 +103,6 @@ public class RedTeamMecanum extends OpMode {
 //        if (gamepad1.left_trigger > 0.5){
 //            drive.turnToDirection(goalAngle);
 //        }
-
-        telemetry.addData("Facing", drive.getDirectionFacing(AngleUnit.DEGREES));
         telemetry.addData("Rotate", rotate);
         telemetry.addData("Flywheel Speed", power);
         telemetry.addData("April Tag", goal);
