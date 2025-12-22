@@ -18,7 +18,7 @@ public class Player2BlueTeleOp extends LinearOpMode {
             "Gamepad 2:\n" +
             "* Shooting: Right Trigger to toggle\n" +
             "* Flywheel Speed: a + 0.05, x - 0.05, Right Trigger = 0.065, Left Trigger = 0\n" +
-            "* Push Ball: b for up, y for down";
+            "* Push Ball: b for up, y for down.";
 
     @Override
     public void runOpMode(){
