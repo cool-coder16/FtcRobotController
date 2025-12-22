@@ -6,11 +6,19 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumBenchServo;
 
 @TeleOp
-public class BlueTeleOp extends LinearOpMode {
+public class Player2BlueTeleOp extends LinearOpMode {
     MecanumBenchServo drive = new MecanumBenchServo();
     double forward, strafe, rotate, goalAngle;
     double power;
     boolean shooting = false;
+    String instructions =
+            "Gamepad 1:\n" +
+            "* Drive: Joysticks\n" +
+            "* Intake: Dpad: up for in, down for out, side for off\n\n" +
+            "Gamepad 2:\n" +
+            "* Shooting: Right Trigger to toggle\n" +
+            "* Flywheel Speed: a + 0.05, x - 0.05, Right Trigger = 0.065, Left Trigger = 0\n" +
+            "* Push Ball: b for up, y for down";
 
     @Override
     public void runOpMode(){
@@ -39,17 +47,23 @@ public class BlueTeleOp extends LinearOpMode {
 
             drive.drive(forward, strafe, rotate);
 
-            if (gamepad1.bWasPressed()){
+            if (gamepad2.bWasPressed()){
                 drive.pushBallUp();
                 sleep(700);
                 drive.stopBallUp();
             }
 
-            if (gamepad1.aWasPressed()){
+            if (gamepad2.yWasPressed()){
+                drive.pushBallDown();
+                sleep(700);
+                drive.stopBallUp();
+            }
+
+            if (gamepad2.aWasPressed()){
                 power += 0.05;
             }
 
-            if (gamepad1.xWasPressed()){
+            if (gamepad2.xWasPressed()){
                 power -= 0.05;
             }
 
@@ -65,15 +79,27 @@ public class BlueTeleOp extends LinearOpMode {
                 drive.stoptake();
             }
 
-            if (gamepad1.right_bumper){
+            if (gamepad2.right_bumper){
                 power = 0.65;
             }
 
-            if (gamepad1.left_bumper) {
+            if (gamepad2.left_bumper) {
                 power = 0;
             }
 
-//            telemetry.addData("Flywheel Speed", power);
+            if (gamepad2.right_trigger > 0.5){
+                shooting = !shooting;
+            }
+
+            if (shooting){
+                drive.setFlywheel(power);
+            } else {
+                drive.setFlywheel(0);
+            }
+
+            telemetry.addLine(instructions);
+            telemetry.addData("Flywheel On", shooting);
+            telemetry.addData("Flywheel Speed", power);
             telemetry.update();
         }
     }

@@ -16,33 +16,30 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class MecanumBenchServo {
-    public DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, intake_motor;
-//    private DcMotor shooting_motor;
+    public DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, intake_motor, flywheel;
 //    public Servo push1, push2;
     public CRServo upPusher;
     public double intakeSpeed = 1; //0.075
+    public double flywheelSpeed = 1;
+
     public void init(HardwareMap hwMap){
         front_right_motor = hwMap.get(DcMotor.class, "frontright");
         front_left_motor = hwMap.get(DcMotor.class, "frontleft");
         back_right_motor = hwMap.get(DcMotor.class, "backright");
         back_left_motor = hwMap.get(DcMotor.class, "backleft");
-//        shooting_motor = hwMap.get(DcMotor.class, "shooter");
+        flywheel = hwMap.get(DcMotor.class, "flywheel");
         intake_motor = hwMap.get(DcMotor.class, "intake");
-
-
-//        push1 = hwMap.get(Servo.class, "push1");
-//        push2 = hwMap.get(Servo.class, "push2");
         upPusher = hwMap.get(CRServo.class, "upPush");
 
         front_right_motor.setDirection(DcMotorSimple.Direction.REVERSE);
         back_left_motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        upPusher.setDirection(DcMotorSimple.Direction.REVERSE);
+        upPusher.setDirection(DcMotorSimple.Direction.FORWARD);
         front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        back_left_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        shooting_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         intake_motor.setPower(intakeSpeed);
     }
@@ -104,11 +101,6 @@ public class MecanumBenchServo {
     }
 
     public void setFlywheel(double power){
-//        shooting_motor.setPower(power);
-    }
-
-    public double getServoPosition(){
-//        return push1.getPosition();
-        return 0.0;
+        flywheel.setPower(power);
     }
 }
