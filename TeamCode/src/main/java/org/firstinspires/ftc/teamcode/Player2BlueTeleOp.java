@@ -11,6 +11,7 @@ public class Player2BlueTeleOp extends LinearOpMode {
     double forward, strafe, rotate, goalAngle;
     double power;
     boolean shooting = false;
+    boolean rtPressed = false;
     String instructions =
             "Gamepad 1:\n" +
             "* Drive: Joysticks\n" +
@@ -87,8 +88,11 @@ public class Player2BlueTeleOp extends LinearOpMode {
                 power = 0;
             }
 
-            if (gamepad2.right_trigger > 0.5){
+            if (gamepad2.right_trigger > 0.5 && !rtPressed){
                 shooting = !shooting;
+                rtPressed = true;
+            } else if (gamepad2.right_trigger < 0.5) {
+                rtPressed = false;
             }
 
             if (shooting){
