@@ -55,23 +55,6 @@ public class RedTeamMecanum extends OpMode {
 
         aprilTag.updateWebcam();
 
-        if (gamepad1.bWasPressed()){
-            if (!servosOn) {
-                drive.shootBall();
-                servosOn = true;
-            } else {
-                drive.stopShoot();
-                servosOn = false;
-            }
-        }
-
-        if (gamepad1.right_trigger > 0.5){
-            if (servosOn){
-                drive.stopShoot();
-                servosOn = false;
-            }
-        }
-
         if (gamepad1.aWasPressed()){
             power += 0.05;
         }

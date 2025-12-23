@@ -43,12 +43,6 @@ public class Blue2Player extends LinearOpMode{
                 drive.drive(forward, strafe, rotate);
                 drive.setFlywheel(power);
 
-                if (gamepad2.bWasPressed()){
-                    drive.shootBall();
-                    sleep(700);
-                    drive.stopShoot();
-                }
-
                 if (gamepad2.aWasPressed()){
                     power += 0.05;
                 }

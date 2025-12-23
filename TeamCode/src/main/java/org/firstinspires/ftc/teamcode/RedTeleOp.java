@@ -51,12 +51,6 @@ public class RedTeleOp extends LinearOpMode {
 
             aprilTag.updateWebcam();
 
-            if (gamepad1.bWasPressed()){
-                drive.shootBall();
-                sleep(700);
-                drive.stopShoot();
-            }
-
             if (gamepad1.aWasPressed()){
                 power += 0.05;
             }
