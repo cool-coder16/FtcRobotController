@@ -39,7 +39,7 @@ public class MecanumBenchServo {
         front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         intake_motor.setPower(intakeSpeed); // Starts the intake motor to the variable intakeSpeed
