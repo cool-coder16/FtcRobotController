@@ -13,7 +13,7 @@ public class MecanumWheelTest extends LinearOpMode {
     MecanumBenchServo drive = new MecanumBenchServo();
 
     public void runOpMode(){
-        drive.init(hardwareMap);
+        drive.init(hardwareMap, 1);
         drive.intake_motor.setPower(0);
         waitForStart();
 

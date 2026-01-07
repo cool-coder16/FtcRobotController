@@ -8,32 +8,36 @@
 
 package org.firstinspires.ftc.teamcode.mechanisms;
 
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MecanumBenchServo {
-    public DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, intake_motor, flywheel, turret; // Initializes the motors
-    public CRServo upPusher; // Initializes the servo
+    public DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, intake_motor, flywheel, turret, upPush; // Initializes the motors
+    public Limelight3A limelight;
     public double intakeSpeed = 1; // Sets the variable speed of the intake to 1
     public double turretSpeed = 0.5; //CHANGEABLE: Change this to change the speed that the turret moves - Needs calibration
 
-    public void init(HardwareMap hwMap){
+    public void init(HardwareMap hwMap, int pipeline){
+        // MOTOR + SERVO Initialization
         front_right_motor = hwMap.get(DcMotor.class, "frontright"); // Assigns motor to the one in the configuration called "frontright"
         front_left_motor = hwMap.get(DcMotor.class, "frontleft"); // Assigns motor to the one in the configuration called "frontleft"
         back_right_motor = hwMap.get(DcMotor.class, "backright"); // Assigns motor to the one in the configuration called "backright"
         back_left_motor = hwMap.get(DcMotor.class, "backleft"); // Assigns motor to the one in the configuration called "backleft"
         flywheel = hwMap.get(DcMotor.class, "flywheel"); // Assigns motor to the one in the configuration called "flywheel"
         intake_motor = hwMap.get(DcMotor.class, "intake"); // Assigns motor to the one in the configuration called "intake"
-        upPusher = hwMap.get(CRServo.class, "upPush"); // Assigns servo to the one in the configuration called "upPush"
+        upPush = hwMap.get(DcMotor.class, "upPush"); // Assigns servo to the one in the configuration called "upPush"
         turret = hwMap.get(DcMotor.class, "turret"); // Assigns motor to the one in the configuration called "turret"
 
+        // Reverses
         front_right_motor.setDirection(DcMotorSimple.Direction.REVERSE); // Auto-reverses the drive motor
         back_left_motor.setDirection(DcMotorSimple.Direction.REVERSE); // Auto-reverses the drive motor
         turret.setDirection(DcMotorSimple.Direction.REVERSE); //CHANGEABLE: IF THE TURRET MOVES BACKWARD, add // to the start
+        flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
+        // Motor SetModes
         front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // Sets the mode, required for it to work. It means that it has an encoder.
         back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -42,7 +46,13 @@ public class MecanumBenchServo {
         flywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        //Start Intake
         intake_motor.setPower(intakeSpeed); // Starts the intake motor to the variable intakeSpeed
+
+        // LIMELIGHT
+        limelight = hwMap.get(Limelight3A.class, "limelight");
+        limelight.pipelineSwitch(pipeline);
+        limelight.start();
     }
 
     public void drive(double forward, double strafe, double rotate){
@@ -78,15 +88,15 @@ public class MecanumBenchServo {
     }
 
     public void pushBallUp(){
-        upPusher.setPower(1.0); // Push the ball up, forever until stopped
+        upPush.setPower(0.5); // Push the ball up, forever until stopped
     }
 
     public void stopBallUp(){
-        upPusher.setPower(0.0); // stops the above
+        upPush.setPower(0.0); // stops the above
     }
 
     public void pushBallDown(){
-        upPusher.setPower(-1.0); // pushes ball down
+        upPush.setPower(-0.5); // pushes ball down
     }
 
     public void intake(){

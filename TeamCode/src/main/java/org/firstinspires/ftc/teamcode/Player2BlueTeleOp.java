@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumBenchServo;
 
 @TeleOp
@@ -24,7 +26,7 @@ public class Player2BlueTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode(){
-        drive.init(hardwareMap); // Puts the hardware devices from the current configuration into the drive
+        drive.init(hardwareMap, 0); // Puts the hardware devices from the current configuration into the drive
         power = 1; //CHANGEABLE: flywheel power set at 1 to start
 
         waitForStart(); // This is for the LinearOpMode, starts after you press the Start button on the Driver Station
@@ -107,6 +109,14 @@ public class Player2BlueTeleOp extends LinearOpMode {
                 drive.turretCounterClockwise(); // Helper function
             } else {
                 drive.stopTurret(); // Helper function
+            }
+
+            LLResult llResult = drive.limelight.getLatestResult();
+            if (llResult != null && llResult.isValid()){
+                Pose3D botPose = llResult.getBotpose();
+                telemetry.addData("Target X", llResult.getTx());
+                telemetry.addData("Target Y", llResult.getTy());
+                telemetry.addData("Ta", llResult.getTa());
             }
 
             telemetry.addLine(instructions); // This puts the instructions text from earlier on the screen

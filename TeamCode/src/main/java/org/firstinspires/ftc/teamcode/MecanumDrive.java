@@ -22,7 +22,7 @@ public class MecanumDrive extends OpMode {
 
     @Override
     public void init() {
-        drive.init(hardwareMap);
+        drive.init(hardwareMap, 1);
         aprilTag.init(hardwareMap, telemetry);
         power = 0.65;
     }

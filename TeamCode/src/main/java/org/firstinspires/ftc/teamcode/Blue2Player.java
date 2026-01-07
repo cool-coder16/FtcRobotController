@@ -15,7 +15,7 @@ public class Blue2Player extends LinearOpMode{
 
         @Override
         public void runOpMode(){
-            drive.init(hardwareMap);
+            drive.init(hardwareMap, 1);
             power = 0.65;
             goalAngle = 45;
 
@@ -104,7 +104,7 @@ public class Blue2Player extends LinearOpMode{
 
         @Override
         public void runOpMode(){
-            drive.init(hardwareMap);
+            drive.init(hardwareMap, 1);
             power = 0.65;
             goalAngle = 45;
 

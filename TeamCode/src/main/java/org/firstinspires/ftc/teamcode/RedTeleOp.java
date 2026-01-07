@@ -19,7 +19,7 @@ public class RedTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode(){
-        drive.init(hardwareMap);
+        drive.init(hardwareMap, 1);
         aprilTag.init(hardwareMap, telemetry);
         power = 0.65;
         goalAngle = -45;
