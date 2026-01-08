@@ -28,14 +28,14 @@ public class MecanumBenchServo {
         back_left_motor = hwMap.get(DcMotor.class, "backleft"); // Assigns motor to the one in the configuration called "backleft"
         flywheel = hwMap.get(DcMotor.class, "flywheel"); // Assigns motor to the one in the configuration called "flywheel"
         intake_motor = hwMap.get(DcMotor.class, "intake"); // Assigns motor to the one in the configuration called "intake"
-        upPush = hwMap.get(DcMotor.class, "upPush"); // Assigns servo to the one in the configuration called "upPush"
+        upPush = hwMap.get(DcMotor.class, "upPush"); // Assigns motor to the one in the configuration called "upPush"
         turret = hwMap.get(DcMotor.class, "turret"); // Assigns motor to the one in the configuration called "turret"
 
         // Reverses
         front_right_motor.setDirection(DcMotorSimple.Direction.REVERSE); // Auto-reverses the drive motor
         back_left_motor.setDirection(DcMotorSimple.Direction.REVERSE); // Auto-reverses the drive motor
-        turret.setDirection(DcMotorSimple.Direction.REVERSE); //CHANGEABLE: IF THE TURRET MOVES BACKWARD, add // to the start
         flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        upPush.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Motor SetModes
         front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // Sets the mode, required for it to work. It means that it has an encoder.
@@ -43,8 +43,9 @@ public class MecanumBenchServo {
         front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        upPush.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //Start Intake
         intake_motor.setPower(intakeSpeed); // Starts the intake motor to the variable intakeSpeed
@@ -75,12 +76,12 @@ public class MecanumBenchServo {
         back_right_motor.setPower(maxSpeed * (backRightPower/maxPower)); // Scales
     }
 
-    public void turretClockwise(){
-        turret.setPower(turretSpeed); // Moves the turret
+    public void turretClockwise(double speed){
+        turret.setPower(Math.min(speed, turretSpeed)); // Moves the turret
     }
 
-    public void turretCounterClockwise(){
-        turret.setPower(-turretSpeed); // Opposite direction
+    public void turretCounterClockwise(double speed){
+        turret.setPower(Math.min(speed, -turretSpeed)); // Opposite direction
     }
 
     public void stopTurret(){
