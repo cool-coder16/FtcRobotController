@@ -11,11 +11,14 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 public class MecanumBenchServo {
-    public DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, intake_motor, flywheel, turret, upPush; // Initializes the motors
+    public DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, intake_motor, turret, upPush; // Initializes the motors
+    public DcMotorEx flywheel;
     public Limelight3A limelight;
     public double intakeSpeed = 1; // Sets the variable speed of the intake to 1
     public double turretSpeed = 0.5; //CHANGEABLE: Change this to change the speed that the turret moves - Needs calibration
@@ -26,7 +29,7 @@ public class MecanumBenchServo {
         front_left_motor = hwMap.get(DcMotor.class, "frontleft"); // Assigns motor to the one in the configuration called "frontleft"
         back_right_motor = hwMap.get(DcMotor.class, "backright"); // Assigns motor to the one in the configuration called "backright"
         back_left_motor = hwMap.get(DcMotor.class, "backleft"); // Assigns motor to the one in the configuration called "backleft"
-        flywheel = hwMap.get(DcMotor.class, "flywheel"); // Assigns motor to the one in the configuration called "flywheel"
+        flywheel = hwMap.get(DcMotorEx.class, "flywheel"); // Assigns motor to the one in the configuration called "flywheel"
         intake_motor = hwMap.get(DcMotor.class, "intake"); // Assigns motor to the one in the configuration called "intake"
         upPush = hwMap.get(DcMotor.class, "upPush"); // Assigns motor to the one in the configuration called "upPush"
         turret = hwMap.get(DcMotor.class, "turret"); // Assigns motor to the one in the configuration called "turret"
@@ -36,6 +39,7 @@ public class MecanumBenchServo {
         back_left_motor.setDirection(DcMotorSimple.Direction.REVERSE); // Auto-reverses the drive motor
         flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         upPush.setDirection(DcMotorSimple.Direction.REVERSE);
+        intake_motor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Motor SetModes
         front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // Sets the mode, required for it to work. It means that it has an encoder.
@@ -46,6 +50,10 @@ public class MecanumBenchServo {
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         upPush.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        //PF (PIDF)
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(110, 0, 0, 13.05);
+        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
         //Start Intake
         intake_motor.setPower(intakeSpeed); // Starts the intake motor to the variable intakeSpeed
@@ -89,7 +97,7 @@ public class MecanumBenchServo {
     }
 
     public void pushBallUp(){
-        upPush.setPower(0.5); // Push the ball up, forever until stopped
+        upPush.setPower(1); // Push the ball up, forever until stopped
     }
 
     public void stopBallUp(){
@@ -97,7 +105,7 @@ public class MecanumBenchServo {
     }
 
     public void pushBallDown(){
-        upPush.setPower(-0.5); // pushes ball down
+        upPush.setPower(-1); // pushes ball down
     }
 
     public void intake(){
@@ -112,7 +120,7 @@ public class MecanumBenchServo {
         intake_motor.setPower(0); // For the dpad controls, gamepad 1
     }
 
-    public void setFlywheel(double power){
-        flywheel.setPower(power); // Allows you to change the flywheel power.
+    public void setFlywheel(double velocity){
+        flywheel.setVelocity(velocity); // Allows you to change the flywheel power.
     }
 }

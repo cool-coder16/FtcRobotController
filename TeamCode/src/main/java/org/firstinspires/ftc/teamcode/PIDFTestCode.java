@@ -1,24 +1,25 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+@Disabled
 @TeleOp
 public class PIDFTestCode extends LinearOpMode {
     DcMotorEx dcMotor;
-    CRServo servo;
+    DcMotor servo;
     DcMotor intake;
 
     public double P = 110;
     public double F = 13.05;
 
-    public double highVelocity = 5000;
-    public double lowVelocity = 3000;
+    public double highVelocity = 2000;
+    public double lowVelocity = 1000;
     public double curTargetVelocity = highVelocity;
 
     public double[] stepSizes = {10.0, 1.0, 0.1, 0.01, 0.001, 0.0001};
@@ -29,7 +30,9 @@ public class PIDFTestCode extends LinearOpMode {
         dcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         dcMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        servo = hardwareMap.get(CRServo.class, "upPush");
+        servo = hardwareMap.get(DcMotor.class, "upPush");
+        servo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        servo.setDirection(DcMotorSimple.Direction.REVERSE);
 
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -73,16 +76,15 @@ public class PIDFTestCode extends LinearOpMode {
             }
 
             if (gamepad1.dpadDownWasPressed()){
-                P += stepSizes[stepIndex];
+                P -= stepSizes[stepIndex];
             }
 
             if (gamepad1.dpadUpWasPressed()){
-                P -= stepSizes[stepIndex];
+                P += stepSizes[stepIndex];
             }
 
             pidfCoefficients = new PIDFCoefficients(P, 0, 0, F);
             dcMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
-
             dcMotor.setVelocity(curTargetVelocity);
 
             double curVelocity = dcMotor.getVelocity();

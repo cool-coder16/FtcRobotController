@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 @TeleOp
+@Disabled
 public class Wordle extends LinearOpMode {
     List<String> words = new ArrayList<>(Arrays.asList(
             "cigar","rebut","sissy","humph","awake","blush","focal","evade","naval","serve",

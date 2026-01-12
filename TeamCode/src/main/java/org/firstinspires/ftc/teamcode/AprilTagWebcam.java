@@ -15,6 +15,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class AprilTagWebcam{
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
