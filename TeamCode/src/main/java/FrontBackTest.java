@@ -22,6 +22,9 @@ public class FrontBackTest extends LinearOpMode {
                 sleep(2000);
                 drive.drive(0, 0, 0);
             }
+
+            telemetry.addLine("X for FORWARD, Y for BACK");
+            telemetry.update();
         }
     }
 }
