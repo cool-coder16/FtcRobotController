@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.teamcode.mechanisms.MecanumBenchServo;
+import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
 @Autonomous
 public class BlueAutoClose extends LinearOpMode {
-    MecanumBenchServo drive = new MecanumBenchServo();
+    FinalBench drive = new FinalBench();
     boolean aimed, ran = false;
     int counts;
 

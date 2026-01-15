@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 import android.util.Size;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -11,6 +12,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+@Disabled
+@Deprecated
 public class MainBench {
     private DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, shooting_motor, intake_motor;
     private CRServo push1, push2;

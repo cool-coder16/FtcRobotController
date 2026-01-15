@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.teamcode.mechanisms.MecanumBenchServo;
+import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
 @TeleOp
 public class RedTeleOpFinal extends LinearOpMode {
-    MecanumBenchServo drive = new MecanumBenchServo(); // Create the variable of the other file, which has all of the actual hardware and functions
+    FinalBench drive = new FinalBench(); // Create the variable of the other file, which has all of the actual hardware and functions
     double forward, strafe, rotate; // Initializing variables for driving, changed every loop
     double manual_velocity; // Initialize flywheel velocity
     boolean shooting = false; // A true/false variable for if we are shooting, for flywheel to turn on/off
@@ -34,7 +34,9 @@ public class RedTeleOpFinal extends LinearOpMode {
         drive.init(hardwareMap, 1); // Puts the hardware devices from the current configuration into the drive, uses Limelight Pipeline 1: red
         manual_velocity = 0;
 
+
         waitForStart(); // This is for the LinearOpMode, starts after you press the Start button on the Driver Station
+        drive.intake();
 
         while (opModeIsActive()) { // Loops really fast until you stop the code
             if (0.5 <= -gamepad1.left_stick_y || -0.5 >= -gamepad1.left_stick_y) { // This fixes dead zones, so that we aren't having the wheels move too slow
@@ -123,7 +125,7 @@ public class RedTeleOpFinal extends LinearOpMode {
             LLResult llResult = drive.limelight.getLatestResult();
             if (llResult != null && llResult.isValid()) {
                 Pose3D botPose = llResult.getBotpose();
-                double tx = llResult.getTx();
+                double tx = llResult.getTx() + 2;
                 double ta = llResult.getTa();
                 telemetry.addLine("TARGET DETECTED");
                 telemetry.addData("Target X", llResult.getTx());
@@ -134,18 +136,37 @@ public class RedTeleOpFinal extends LinearOpMode {
                 telemetry.addLine("----------------------------");
 
                 velocity = 25.12398 * Math.pow(ta, 4) - 178.76699 * Math.pow(ta, 3) + 516.00924 * Math.pow(ta, 2)- 820.32747 * ta + 2006.96368 + manual_velocity;
+                if (ta >= 0.5) {
+                    velocity -= 50;
+                } else {
+                    velocity -= 35;
+                }
                 // Turret Clockwise subtracts from tx
                 /// AUTO AIM
                 double allowedErrorDegrees = 0.5;
                 double error = 0, power = 0;
                 if (tracking) {
                     if (tx > allowedErrorDegrees) {
-                        error = tx - allowedErrorDegrees;
-                        power = Math.max(error / 50, 0.0);
+                        error = Math.abs(tx - allowedErrorDegrees);
+//                        if (error < 10){
+//                            power = 0.02 * error;
+//                        } else if (error < 20){
+//                            power = 0.03 * (error - 10) + 0.2;
+//                        } else {
+//                            power = 0.04 * (error - 20) + 0.5;
+//                        }
+                        power = Math.max(error/25, 0.1);
                         drive.turretClockwise(power);
                     } else if (tx < -allowedErrorDegrees) {
-                        error = tx + allowedErrorDegrees;
-                        power = Math.max(-error / 50, 0.0);
+                        error = Math.abs(tx + allowedErrorDegrees);
+//                        if (error < 10){
+//                            power = 0.02 * error;
+//                        } else if (error < 20){
+//                            power = 0.03 * (error - 10) + 0.2;
+//                        } else {
+//                            power = 0.04 * (error - 20) + 0.5;
+//                        }
+                        power = Math.max(error/25, 0.1);
                         drive.turretCounterClockwise(power);
                     } else {
                         drive.stopTurret();

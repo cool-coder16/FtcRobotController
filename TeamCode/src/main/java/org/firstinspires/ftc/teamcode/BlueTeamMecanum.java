@@ -3,17 +3,15 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.configuration.annotations.DigitalIoDeviceType;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.mechanisms.MecanumBenchServo;
+import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @Deprecated
 @Disabled
 @TeleOp
 public class BlueTeamMecanum extends OpMode {
-    MecanumBenchServo drive = new MecanumBenchServo();
+    FinalBench drive = new FinalBench();
     AprilTagWebcam aprilTag = new AprilTagWebcam();
     double forward, strafe, rotate, goalAngle;
 

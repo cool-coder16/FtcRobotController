@@ -3,14 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.mechanisms.MecanumBenchServo;
+import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
 @Disabled
 @TeleOp
 public class MecanumWheelTest extends LinearOpMode {
-    MecanumBenchServo drive = new MecanumBenchServo();
+    FinalBench drive = new FinalBench();
 
     public void runOpMode(){
         drive.init(hardwareMap, 1);

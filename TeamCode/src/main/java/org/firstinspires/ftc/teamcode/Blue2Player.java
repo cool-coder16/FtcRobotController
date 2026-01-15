@@ -4,12 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.mechanisms.MecanumBenchServo;
+import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
 @Disabled
 @TeleOp
 public class Blue2Player extends LinearOpMode{
-        MecanumBenchServo drive = new MecanumBenchServo();
+        FinalBench drive = new FinalBench();
         double forward, strafe, rotate, goalAngle;
         double power;
 
@@ -89,7 +89,7 @@ public class Blue2Player extends LinearOpMode{
         @Disabled
     @TeleOp
     public static class Player2TeleOp extends LinearOpMode {
-        MecanumBenchServo drive = new MecanumBenchServo();
+        FinalBench drive = new FinalBench();
         double forward, strafe, rotate, goalAngle;
         double power;
         boolean shooting = false;

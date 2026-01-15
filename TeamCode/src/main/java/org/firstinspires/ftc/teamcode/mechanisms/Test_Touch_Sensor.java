@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+@Disabled
 public class Test_Touch_Sensor {
     private DigitalChannel touchSensor;
 

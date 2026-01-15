@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.teamcode.mechanisms.MecanumBenchServo;
+import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
 @TeleOp
 public class BlueTeleOpFinal extends LinearOpMode {
-    MecanumBenchServo drive = new MecanumBenchServo(); // Create the variable of the other file, which has all of the actual hardware and functions
+    FinalBench drive = new FinalBench(); // Create the variable of the other file, which has all of the actual hardware and functions
     double forward, strafe, rotate; // Initializing variables for driving, changed every loop
     double manual_velocity; // Initialize flywheel velocity
     boolean shooting = false; // A true/false variable for if we are shooting, for flywheel to turn on/off
