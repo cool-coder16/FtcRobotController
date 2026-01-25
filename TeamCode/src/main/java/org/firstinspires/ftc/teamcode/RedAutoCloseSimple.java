@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
 @Autonomous
-public class BlueAutoClose extends LinearOpMode {
+public class RedAutoCloseSimple extends LinearOpMode {
     FinalBench drive = new FinalBench();
     boolean aimed, ran = false;
     int counts = 0;
@@ -112,76 +112,31 @@ public class BlueAutoClose extends LinearOpMode {
 
     public void runOpMode() {
         // Init code
-        drive.init(hardwareMap, 0);
+        drive.init(hardwareMap, 1);
         waitForStart();
         drive.intake();
 
         // Pre-fed balls
         driveBackward(0.5, 1800);
 
-        autoAim(200, 1);
+        autoAim(200, -1);
         sleep(wait1);
 
         shootAllBalls(2500);
 
-        turn(-0.4, 428);
+        turn(0.4, 428);
 
+        // LEAVE points
+        strafe(0.75, 1100);
 
-//      Collect first row of balls
-        driveForward(0.3, 1900);
+//        driveForward(0.3, 1900);
+//
+//        sleep(200);
+//
+//        driveBackward(0.3, 1900);
 
-        sleep(200);
-
-        driveBackward(0.3, 1900);
-
-        drive.turretClockwise(0.4); // Turn turret
+        drive.turretCounterClockwise(0.4); // Turn turret
         sleep(moveTurret1);
         drive.stopTurret(); // Stop turret
-
-        autoAim(200, -2);
-
-        shootAllBalls(2000);
-
-
-        // Collect second row of balls
-        strafe(-0.75, 720);
-
-        turn(0.3, 50);
-
-        driveForward(0.8, 400);
-        driveForward(0.4, 900);
-
-        sleep(200);
-
-        driveBackward(0.6, 1000);
-
-        strafe(0.75, 720);
-
-        autoAim(200, 1);
-
-        shootAllBalls(1700);
-
-
-        // Collect third row of balls
-        strafe(-0.75, 1100);
-
-//        turn(-0.3, 30);
-
-        driveForward(0.8, 400);
-        driveForward(0.4, 1970);
-
-        sleep(200);
-
-        driveBackward(0.6, 1000);
-
-        strafe(0.75, 1350);
-
-        autoAim(200, 2);
-        drive.setFlywheel(1500);
-        sleep(100);
-
-        shootAllBalls(1600);
-
-        strafe(-0.75, 500);
     }
 }

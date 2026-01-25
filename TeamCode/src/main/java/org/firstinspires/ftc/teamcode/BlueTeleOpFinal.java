@@ -18,23 +18,25 @@ public class BlueTeleOpFinal extends LinearOpMode {
     double velocity;
     String instructions =
             "Gamepad 1 (start + a):\n" +
-            "* Drive: Joysticks\n" +
-            "* Intake: Dpad: up for in, down for out, side for off\n" +
-            "----------------------------\n" +
-            "Gamepad 2 (start + b):\n" +
-            "* Shooting: Right Trigger to toggle\n" +
-            "* Auto-Aim: Left Trigger to toggle\n" +
-            "* Flywheel Velocity: a + 50, x - 50, Right Trigger = 600, Left Trigger = 0\n" +
-            "* Push Ball: b for up, y for down\n" +
-            "* Move Turret: Dpad right + left\n" +
-            "----------------------------"; // The written instructions on the screen, don't change
+                    "* Drive: Joysticks\n" +
+                    "* Intake: Dpad: up for in, down for out, side for off\n" +
+                    "----------------------------\n" +
+                    "Gamepad 2 (start + b):\n" +
+                    "* Shooting: Right Trigger to toggle\n" +
+                    "* Auto-Aim: Left Trigger to toggle\n" +
+                    "* Flywheel Velocity: a + 50, x - 50, Right Trigger = 600, Left Trigger = 0\n" +
+                    "* Push Ball: b for up, y for down\n" +
+                    "* Move Turret: Dpad right + left\n" +
+                    "----------------------------"; // The written instructions on the screen, don't change
 
     @Override
     public void runOpMode() {
-        drive.init(hardwareMap, 0); // Puts the hardware devices from the current configuration into the drive
+        drive.init(hardwareMap, 0); // Puts the hardware devices from the current configuration into the drive, uses Limelight Pipeline 1: red
         manual_velocity = 0;
 
+
         waitForStart(); // This is for the LinearOpMode, starts after you press the Start button on the Driver Station
+        drive.intake();
 
         while (opModeIsActive()) { // Loops really fast until you stop the code
             if (0.5 <= -gamepad1.left_stick_y || -0.5 >= -gamepad1.left_stick_y) { // This fixes dead zones, so that we aren't having the wheels move too slow
@@ -42,11 +44,13 @@ public class BlueTeleOpFinal extends LinearOpMode {
             } else {
                 forward = 0; // This means that the joystick is not moved enough
             }
+
             if (0.5 <= gamepad1.left_stick_x || -0.5 >= gamepad1.left_stick_x) {
                 strafe = gamepad1.left_stick_x;
             } else {
                 strafe = 0;
             }
+
             if (0.5 <= gamepad1.right_stick_x || -0.5 >= gamepad1.right_stick_x) {
                 rotate = gamepad1.right_stick_x;
             } else {
@@ -123,7 +127,7 @@ public class BlueTeleOpFinal extends LinearOpMode {
             LLResult llResult = drive.limelight.getLatestResult();
             if (llResult != null && llResult.isValid()) {
                 Pose3D botPose = llResult.getBotpose();
-                double tx = llResult.getTx();
+                double tx = llResult.getTx() - 2;
                 double ta = llResult.getTa();
                 telemetry.addLine("TARGET DETECTED");
                 telemetry.addData("Target X", llResult.getTx());
@@ -131,25 +135,30 @@ public class BlueTeleOpFinal extends LinearOpMode {
                 telemetry.addData("Target Area", llResult.getTa());
                 telemetry.addData("Velocity Modifier", manual_velocity);
                 telemetry.addData("Total Velocity", velocity);
+                telemetry.addLine("----------------------------");
 
                 velocity = 25.12398 * Math.pow(ta, 4) - 178.76699 * Math.pow(ta, 3) + 516.00924 * Math.pow(ta, 2)- 820.32747 * ta + 2006.96368 + manual_velocity;
+                if (ta >= 0.5) {
+                    velocity -= 70;
+                } else {
+                    velocity -= 40;
+                }
                 // Turret Clockwise subtracts from tx
                 /// AUTO AIM
                 double allowedErrorDegrees = 0.5;
                 double error = 0, power = 0;
                 if (tracking) {
                     if (tx > allowedErrorDegrees) {
-                        error = tx - allowedErrorDegrees;
-                        power = Math.max(error / 50, 0.0);
+                        error = Math.abs(tx - allowedErrorDegrees);
+                        power = Math.max(error/25, 0.1);
                         drive.turretClockwise(power);
                     } else if (tx < -allowedErrorDegrees) {
-                        error = tx + allowedErrorDegrees;
-                        power = Math.max(-error / 50, 0.0);
+                        error = Math.abs(tx + allowedErrorDegrees);
+                        power = Math.max(error/25, 0.1);
                         drive.turretCounterClockwise(power);
                     } else {
                         drive.stopTurret();
                     }
-                    telemetry.addLine("----------------------------");
                 }
 
 

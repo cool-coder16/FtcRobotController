@@ -16,7 +16,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 public class FinalBench {
-    public DcMotor front_right_motor, front_left_motor, back_right_motor, back_left_motor, intake_motor, turret, upPush; // Initializes the motors
+    public DcMotorEx front_right_motor, front_left_motor, back_right_motor, back_left_motor;
+    public DcMotor intake_motor, turret, upPush; // Initializes the motors
     public DcMotorEx flywheel;
     public Limelight3A limelight;
     public double intakeSpeed = 1; // Sets the variable speed of the intake to 1
@@ -24,10 +25,10 @@ public class FinalBench {
 
     public void init(HardwareMap hwMap, int pipeline){
         // MOTOR + SERVO Initialization
-        front_right_motor = hwMap.get(DcMotor.class, "frontright"); // Assigns motor to the one in the configuration called "frontright"
-        front_left_motor = hwMap.get(DcMotor.class, "frontleft"); // Assigns motor to the one in the configuration called "frontleft"
-        back_right_motor = hwMap.get(DcMotor.class, "backright"); // Assigns motor to the one in the configuration called "backright"
-        back_left_motor = hwMap.get(DcMotor.class, "backleft"); // Assigns motor to the one in the configuration called "backleft"
+        front_right_motor = hwMap.get(DcMotorEx.class, "frontright"); // Assigns motor to the one in the configuration called "frontright"
+        front_left_motor = hwMap.get(DcMotorEx.class, "frontleft"); // Assigns motor to the one in the configuration called "frontleft"
+        back_right_motor = hwMap.get(DcMotorEx.class, "backright"); // Assigns motor to the one in the configuration called "backright"
+        back_left_motor = hwMap.get(DcMotorEx.class, "backleft"); // Assigns motor to the one in the configuration called "backleft"
         flywheel = hwMap.get(DcMotorEx.class, "flywheel"); // Assigns motor to the one in the configuration called "flywheel"
         intake_motor = hwMap.get(DcMotor.class, "intake"); // Assigns motor to the one in the configuration called "intake"
         upPush = hwMap.get(DcMotor.class, "upPush"); // Assigns motor to the one in the configuration called "upPush"
@@ -41,13 +42,13 @@ public class FinalBench {
         intake_motor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Motor SetModes
-        front_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // Sets the mode, required for it to work. It means that it has an encoder.
-        back_left_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        front_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        back_right_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intake_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        front_left_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Sets the mode, required for it to work. It means that it has an encoder.
+        back_left_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        front_right_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        back_right_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         upPush.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Motor ZeroModes

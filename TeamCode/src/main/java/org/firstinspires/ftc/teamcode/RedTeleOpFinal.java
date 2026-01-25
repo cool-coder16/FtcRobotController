@@ -44,11 +44,13 @@ public class RedTeleOpFinal extends LinearOpMode {
             } else {
                 forward = 0; // This means that the joystick is not moved enough
             }
+
             if (0.5 <= gamepad1.left_stick_x || -0.5 >= gamepad1.left_stick_x) {
                 strafe = gamepad1.left_stick_x;
             } else {
                 strafe = 0;
             }
+
             if (0.5 <= gamepad1.right_stick_x || -0.5 >= gamepad1.right_stick_x) {
                 rotate = gamepad1.right_stick_x;
             } else {
@@ -139,33 +141,19 @@ public class RedTeleOpFinal extends LinearOpMode {
                 if (ta >= 0.5) {
                     velocity -= 50;
                 } else {
-                    velocity -= 35;
+                    velocity -= 20;
                 }
                 // Turret Clockwise subtracts from tx
                 /// AUTO AIM
-                double allowedErrorDegrees = 0.5;
+                double allowedErrorDegrees = 1;
                 double error = 0, power = 0;
                 if (tracking) {
                     if (tx > allowedErrorDegrees) {
                         error = Math.abs(tx - allowedErrorDegrees);
-//                        if (error < 10){
-//                            power = 0.02 * error;
-//                        } else if (error < 20){
-//                            power = 0.03 * (error - 10) + 0.2;
-//                        } else {
-//                            power = 0.04 * (error - 20) + 0.5;
-//                        }
                         power = Math.max(error/25, 0.1);
                         drive.turretClockwise(power);
                     } else if (tx < -allowedErrorDegrees) {
                         error = Math.abs(tx + allowedErrorDegrees);
-//                        if (error < 10){
-//                            power = 0.02 * error;
-//                        } else if (error < 20){
-//                            power = 0.03 * (error - 10) + 0.2;
-//                        } else {
-//                            power = 0.04 * (error - 20) + 0.5;
-//                        }
                         power = Math.max(error/25, 0.1);
                         drive.turretCounterClockwise(power);
                     } else {

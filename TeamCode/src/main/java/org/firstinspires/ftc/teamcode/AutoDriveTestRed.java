@@ -8,16 +8,13 @@ import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
 @Disabled
 @Autonomous
-public class CalibrationCircle extends LinearOpMode {
+public class AutoDriveTestRed extends LinearOpMode {
     FinalBench drive = new FinalBench();
 
-    double power = 0.3;
-
     public void runOpMode(){
-        drive.init(hardwareMap, 0);
+        drive.init(hardwareMap, 1);
         waitForStart();
-        while (opModeIsActive()) {
-            drive.drive(power, 0, power);
-        }
+
+
     }
 }

@@ -8,15 +8,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
 @Autonomous
-public class BlueAutoClose extends LinearOpMode {
+public class BlueAutoFar extends LinearOpMode {
     FinalBench drive = new FinalBench();
-    boolean aimed, ran = false;
-    int counts = 0;
-
-    // VARIABLES
-    long wait1 = 500;
-
-    long moveTurret1 = 300;
 
     public void driveForward(double power, long duration){
         drive.drive(power, 0, 0);
@@ -49,8 +42,8 @@ public class BlueAutoClose extends LinearOpMode {
     public void autoAim(int loops, double modifier){
         int ALLOWED_ERROR = 2;
         double flywheelSpeed = 0;
-        counts = 0;
-        aimed = false;
+        int counts = 0;
+        boolean aimed = false;
         while(!aimed && counts <= loops){
             LLResult llResult = drive.limelight.getLatestResult();
             if (llResult != null && llResult.isValid()) {
@@ -77,14 +70,14 @@ public class BlueAutoClose extends LinearOpMode {
                 counts += 1;
 
                 flywheelSpeed = 25.12398 * Math.pow(ta, 4) - 178.76699 * Math.pow(ta, 3) + 516.00924 * Math.pow(ta, 2)- 820.32747 * ta + 2006.96368;
-                flywheelSpeed -= 50;
+                flywheelSpeed -= 25;
             } else {
                 drive.stopTurret();
-                aimed = true;
+//                aimed = true;
                 telemetry.addLine("INVALID LIMELIGHT RESULT");
                 telemetry.update();
             }
-            sleep(10);
+            sleep(30);
         }
 
         drive.stopTurret();
@@ -99,6 +92,9 @@ public class BlueAutoClose extends LinearOpMode {
             double tx = llResult.getTx();
             telemetry.addData("tx", tx);
             telemetry.update();
+        } else {
+            telemetry.addLine("TARGET NOT FOUND");
+            telemetry.update();
         }
     }
 
@@ -110,78 +106,21 @@ public class BlueAutoClose extends LinearOpMode {
         sleep(100);
     }
 
-    public void runOpMode() {
-        // Init code
+    public void runOpMode(){
         drive.init(hardwareMap, 0);
+        while (opModeInInit()){
+            getTx();
+        }
         waitForStart();
+
         drive.intake();
 
-        // Pre-fed balls
-        driveBackward(0.5, 1800);
-
-        autoAim(200, 1);
-        sleep(wait1);
+        autoAim(1000, -2);
+        sleep(1000);
 
         shootAllBalls(2500);
 
-        turn(-0.4, 428);
+        strafe(-0.5, 1200);
 
-
-//      Collect first row of balls
-        driveForward(0.3, 1900);
-
-        sleep(200);
-
-        driveBackward(0.3, 1900);
-
-        drive.turretClockwise(0.4); // Turn turret
-        sleep(moveTurret1);
-        drive.stopTurret(); // Stop turret
-
-        autoAim(200, -2);
-
-        shootAllBalls(2000);
-
-
-        // Collect second row of balls
-        strafe(-0.75, 720);
-
-        turn(0.3, 50);
-
-        driveForward(0.8, 400);
-        driveForward(0.4, 900);
-
-        sleep(200);
-
-        driveBackward(0.6, 1000);
-
-        strafe(0.75, 720);
-
-        autoAim(200, 1);
-
-        shootAllBalls(1700);
-
-
-        // Collect third row of balls
-        strafe(-0.75, 1100);
-
-//        turn(-0.3, 30);
-
-        driveForward(0.8, 400);
-        driveForward(0.4, 1970);
-
-        sleep(200);
-
-        driveBackward(0.6, 1000);
-
-        strafe(0.75, 1350);
-
-        autoAim(200, 2);
-        drive.setFlywheel(1500);
-        sleep(100);
-
-        shootAllBalls(1600);
-
-        strafe(-0.75, 500);
     }
 }
