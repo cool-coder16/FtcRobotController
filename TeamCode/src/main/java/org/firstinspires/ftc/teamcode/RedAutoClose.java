@@ -15,7 +15,6 @@ public class RedAutoClose extends LinearOpMode {
 
     // VARIABLES
     long wait1 = 500;
-
     long moveTurret1 = 300;
 
     public void driveForward(double power, long duration){
