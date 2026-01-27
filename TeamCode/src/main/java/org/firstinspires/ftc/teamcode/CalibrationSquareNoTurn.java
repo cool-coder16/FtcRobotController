@@ -17,14 +17,14 @@ public class CalibrationSquareNoTurn extends LinearOpMode {
     public void runOpMode(){
         drive.init(hardwareMap, 0);
         waitForStart();
-        drive.drive(power, 0, 0);
+        drive.setDriveMotors(power, 0, 0);
         sleep(time);
-        drive.drive(0, power, 0);
+        drive.setDriveMotors(0, power, 0);
         sleep(time);
-        drive.drive(-power, 0, 0);
+        drive.setDriveMotors(-power, 0, 0);
         sleep(time);
-        drive.drive(0, -power, 0);
+        drive.setDriveMotors(0, -power, 0);
         sleep(time);
-        drive.drive(0, 0, 0);
+        drive.setDriveMotors(0, 0, 0);
     }
 }

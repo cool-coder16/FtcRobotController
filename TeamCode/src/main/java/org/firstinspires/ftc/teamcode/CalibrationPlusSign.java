@@ -19,18 +19,18 @@ public class CalibrationPlusSign extends LinearOpMode {
         drive.init(hardwareMap, 1);
         waitForStart();
 
-        drive.drive(forwardPower, 0, 0);
+        drive.setDriveMotors(forwardPower, 0, 0);
         sleep(distanceTime / 2);
-        drive.drive(-forwardPower, 0, 0);
+        drive.setDriveMotors(-forwardPower, 0, 0);
         sleep(distanceTime);
-        drive.drive(forwardPower, 0, 0);
+        drive.setDriveMotors(forwardPower, 0, 0);
         sleep(distanceTime / 2);
-        drive.drive(0, strafePower, 0);
+        drive.setDriveMotors(0, strafePower, 0);
         sleep(distanceTime / 2);
-        drive.drive(0, -strafePower, 0);
+        drive.setDriveMotors(0, -strafePower, 0);
         sleep(distanceTime);
-        drive.drive(0, strafePower, 0);
+        drive.setDriveMotors(0, strafePower, 0);
         sleep(distanceTime / 2);
-        drive.drive(0, 0, 0);
+        drive.setDriveMotors(0, 0, 0);
     }
 }

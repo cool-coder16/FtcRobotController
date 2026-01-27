@@ -40,7 +40,7 @@ public class Blue2Player extends LinearOpMode{
 
 
 
-                drive.drive(forward, strafe, rotate);
+                drive.setDriveMotors(forward, strafe, rotate);
                 drive.setFlywheel(power);
 
                 if (gamepad2.aWasPressed()){
@@ -127,7 +127,7 @@ public class Blue2Player extends LinearOpMode{
                     rotate = 0;
                 }
 
-                drive.drive(forward, strafe, rotate);
+                drive.setDriveMotors(forward, strafe, rotate);
 
                 if (gamepad2.bWasPressed()){
                     drive.pushBallUp();

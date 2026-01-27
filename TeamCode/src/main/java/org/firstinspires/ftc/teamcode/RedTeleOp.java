@@ -45,7 +45,7 @@ public class RedTeleOp extends LinearOpMode {
 
 
 
-            drive.drive(forward, strafe, rotate);
+            drive.setDriveMotors(forward, strafe, rotate);
             drive.setFlywheel(power);
 
             aprilTag.updateWebcam();

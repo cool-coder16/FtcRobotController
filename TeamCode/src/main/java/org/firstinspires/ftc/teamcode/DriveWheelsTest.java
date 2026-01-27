@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
-@TeleOp
+@Disabled
+@TeleOp(group = "Test Code")
 public class DriveWheelsTest extends LinearOpMode {
     FinalBench drive = new FinalBench();
 

@@ -17,7 +17,7 @@ public class CalibrationCircle extends LinearOpMode {
         drive.init(hardwareMap, 0);
         waitForStart();
         while (opModeIsActive()) {
-            drive.drive(power, 0, power);
+            drive.setDriveMotors(power, 0, power);
         }
     }
 }

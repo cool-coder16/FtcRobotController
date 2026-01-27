@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
-@TeleOp
+@TeleOp (group = "TeleOp")
 public class BlueTeleOpFinal extends LinearOpMode {
     FinalBench drive = new FinalBench(); // Create the variable of the other file, which has all of the actual hardware and functions
     double forward, strafe, rotate; // Initializing variables for driving, changed every loop
@@ -57,7 +57,7 @@ public class BlueTeleOpFinal extends LinearOpMode {
                 rotate = 0;
             }
 
-            drive.drive(forward, strafe, rotate); // Uses the drive function, which sends the values to the drive motors
+            drive.setDriveMotors(forward, strafe, rotate); // Uses the drive function, which sends the values to the drive motors
 
             if (gamepad2.b) { // Checking if b was just pressed
                 drive.pushBallUp();
@@ -137,7 +137,7 @@ public class BlueTeleOpFinal extends LinearOpMode {
                 telemetry.addData("Total Velocity", velocity);
                 telemetry.addLine("----------------------------");
 
-                velocity = 25.12398 * Math.pow(ta, 4) - 178.76699 * Math.pow(ta, 3) + 516.00924 * Math.pow(ta, 2)- 820.32747 * ta + 2006.96368 + manual_velocity;
+                velocity = 83.04024 * Math.pow(ta, 4) - 618.76341 * Math.pow(ta, 3) + 1614.89291 * Math.pow(ta, 2) - 1811.58419 * ta + 2014.06704 + manual_velocity;
                 if (ta >= 0.5) {
                     velocity -= 70;
                 } else {

@@ -9,17 +9,21 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 public class FinalBench {
-    public DcMotorEx front_right_motor, front_left_motor, back_right_motor, back_left_motor;
+    public DcMotorEx front_right_motor, front_left_motor, back_right_motor, back_left_motor, flywheel;
     public DcMotor intake_motor, turret, upPush; // Initializes the motors
-    public DcMotorEx flywheel;
+
     public Limelight3A limelight;
+
+    public IMU imu;
     public double intakeSpeed = 1; // Sets the variable speed of the intake to 1
     public double turretSpeed = 0.5; //CHANGEABLE: Change this to change the speed that the turret moves - Needs calibration
 
@@ -33,6 +37,7 @@ public class FinalBench {
         intake_motor = hwMap.get(DcMotor.class, "intake"); // Assigns motor to the one in the configuration called "intake"
         upPush = hwMap.get(DcMotor.class, "upPush"); // Assigns motor to the one in the configuration called "upPush"
         turret = hwMap.get(DcMotor.class, "turret"); // Assigns motor to the one in the configuration called "turret"
+        imu = hwMap.get(IMU.class, "IMU");
 
         // Reverses
         front_right_motor.setDirection(DcMotorSimple.Direction.REVERSE); // Auto-reverses the drive motor
@@ -69,9 +74,20 @@ public class FinalBench {
         limelight = hwMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(pipeline);
         limelight.start();
+
+        // IMU
+        IMU.Parameters parameters = new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                )
+        );
+
+        imu.initialize(parameters);
+        imu.resetYaw();
     }
 
-    public void drive(double forward, double strafe, double rotate){
+    public void setDriveMotors(double forward, double strafe, double rotate){
         double frontLeftPower = forward + strafe + rotate; // Equations to figure out individual motor speeds: Thanks to Brogan M. Pratt's Mecanum Drive video
         double backLeftPower = forward - strafe + rotate;
         double frontRightPower = forward - strafe - rotate;

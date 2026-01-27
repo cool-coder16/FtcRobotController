@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
-@Autonomous
+@Autonomous(group = "Autonomous")
 public class BlueAutoCloseSimple extends LinearOpMode {
     FinalBench drive = new FinalBench();
     boolean aimed, ran = false;
@@ -19,30 +19,30 @@ public class BlueAutoCloseSimple extends LinearOpMode {
     long moveTurret1 = 300;
 
     public void driveForward(double power, long duration){
-        drive.drive(power, 0, 0);
+        drive.setDriveMotors(power, 0, 0);
         sleep(duration);
-        drive.drive(0, 0, 0);
+        drive.setDriveMotors(0, 0, 0);
         sleep(100);
     }
 
     public void driveBackward(double power, long duration){
-        drive.drive(-power, 0, 0);
+        drive.setDriveMotors(-power, 0, 0);
         sleep(duration);
-        drive.drive(0, 0, 0);
+        drive.setDriveMotors(0, 0, 0);
         sleep(100);
     }
 
     public void turn(double power, long duration){
-        drive.drive(0, 0, power);
+        drive.setDriveMotors(0, 0, power);
         sleep(duration);
-        drive.drive(0, 0, 0);
+        drive.setDriveMotors(0, 0, 0);
         sleep(100);
     }
 
     public void strafe(double power, long duration){
-        drive.drive(0, power, 0);
+        drive.setDriveMotors(0, power, 0);
         sleep(duration);
-        drive.drive(0, 0, 0);
+        drive.setDriveMotors(0, 0, 0);
         sleep(100);
     }
 

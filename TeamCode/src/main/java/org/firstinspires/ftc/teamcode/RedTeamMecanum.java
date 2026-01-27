@@ -49,7 +49,7 @@ public class RedTeamMecanum extends OpMode {
 
 
 
-        drive.drive(forward, strafe, rotate);
+        drive.setDriveMotors(forward, strafe, rotate);
         drive.setFlywheel(power);
 
         aprilTag.updateWebcam();

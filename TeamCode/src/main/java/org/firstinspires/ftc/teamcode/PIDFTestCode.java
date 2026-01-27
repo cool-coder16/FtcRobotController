@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-@Disabled
-@TeleOp
+
+@TeleOp(group = "Test Code")
 public class PIDFTestCode extends LinearOpMode {
     DcMotorEx dcMotor;
     DcMotor servo;
