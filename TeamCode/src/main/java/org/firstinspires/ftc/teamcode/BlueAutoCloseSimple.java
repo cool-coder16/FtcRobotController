@@ -76,7 +76,7 @@ public class BlueAutoCloseSimple extends LinearOpMode {
 
                 counts += 1;
 
-                flywheelSpeed = 25.12398 * Math.pow(ta, 4) - 178.76699 * Math.pow(ta, 3) + 516.00924 * Math.pow(ta, 2)- 820.32747 * ta + 2006.96368;
+                flywheelSpeed = drive.calculatePower(ta);
                 flywheelSpeed -= 50;
             } else {
                 drive.stopTurret();
@@ -103,7 +103,7 @@ public class BlueAutoCloseSimple extends LinearOpMode {
     }
 
     public void shootAllBalls(long shootTime){
-        drive.pushBallUp(); // Shoot 3 Balls
+        drive.pushBallUpStrong(); // Shoot 3 Balls
         sleep(shootTime);
         drive.stopBallUp(); // Stop shooting
         drive.setFlywheel(0); // Stop flywheel

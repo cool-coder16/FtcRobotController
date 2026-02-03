@@ -60,20 +60,20 @@ public class BlueTeleOpFinal extends LinearOpMode {
             drive.setDriveMotors(forward, strafe, rotate); // Uses the drive function, which sends the values to the drive motors
 
             if (gamepad2.b) { // Checking if b was just pressed
-                drive.pushBallUp();
+                drive.pushBallUpStrong();
             } else if (gamepad2.y) {
-                drive.pushBallDown();
+                drive.setUpPush(0.9);
             } else {
                 drive.stopBallUp();
             }
 
-            if (gamepad2.aWasPressed()) {
-                manual_velocity += 25; // This ups the flywheel speed if a was pressed
-            }
-
-            if (gamepad2.xWasPressed()) {
-                manual_velocity -= 25; // This lowers the flywheel speed if x was pressed
-            }
+//            if (gamepad2.aWasPressed()) {
+//                manual_velocity += 25; // This ups the flywheel speed if a was pressed
+//            }
+//
+//            if (gamepad2.xWasPressed()) {
+//                manual_velocity -= 25; // This lowers the flywheel speed if x was pressed
+//            }
 
             if (gamepad1.dpad_down) {
                 drive.outtake(); // Helper function
@@ -116,9 +116,9 @@ public class BlueTeleOpFinal extends LinearOpMode {
                 drive.setFlywheel(0); // Otherwise, turns it off
             }
 
-            if (gamepad2.dpad_right) {
+            if (gamepad2.dpad_right && drive.turret.getCurrentPosition() < 500) {
                 drive.turretClockwise(0.5); // Helper function
-            } else if (gamepad2.dpad_left) {
+            } else if (gamepad2.dpad_left && drive.turret.getCurrentPosition() > -500) {
                 drive.turretCounterClockwise(0.5); // Helper function
             } else {
                 drive.stopTurret(); // Helper function
@@ -137,22 +137,21 @@ public class BlueTeleOpFinal extends LinearOpMode {
                 telemetry.addData("Total Velocity", velocity);
                 telemetry.addLine("----------------------------");
 
-                velocity = 83.04024 * Math.pow(ta, 4) - 618.76341 * Math.pow(ta, 3) + 1614.89291 * Math.pow(ta, 2) - 1811.58419 * ta + 2014.06704 + manual_velocity;
+                velocity = drive.calculatePower(ta) + manual_velocity;
                 if (ta >= 0.5) {
                     velocity -= 70;
-                } else {
-                    velocity -= 40;
                 }
+
                 // Turret Clockwise subtracts from tx
                 /// AUTO AIM
                 double allowedErrorDegrees = 0.5;
                 double error = 0, power = 0;
                 if (tracking) {
-                    if (tx > allowedErrorDegrees) {
+                    if (tx > allowedErrorDegrees && drive.turret.getCurrentPosition() < 450) {
                         error = Math.abs(tx - allowedErrorDegrees);
                         power = Math.max(error/25, 0.1);
                         drive.turretClockwise(power);
-                    } else if (tx < -allowedErrorDegrees) {
+                    } else if (tx < -allowedErrorDegrees && drive.turret.getCurrentPosition() > -450) {
                         error = Math.abs(tx + allowedErrorDegrees);
                         power = Math.max(error/25, 0.1);
                         drive.turretCounterClockwise(power);
@@ -167,6 +166,8 @@ public class BlueTeleOpFinal extends LinearOpMode {
                 telemetry.addData("Flywheel Velocity", velocity); // Tells you the power of the flywheel
                 telemetry.addData("Tracking", tracking);
                 telemetry.update(); // Displays all the text
+            } else {
+                velocity = 1500;
             }
         }
     }

@@ -2,23 +2,23 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
-@Disabled
 @Autonomous(group = "Autonomous")
 public class BlueAutoClose extends LinearOpMode {
     FinalBench drive = new FinalBench();
-    boolean aimed, ran = false;
-    int counts = 0;
 
-    // VARIABLES
-    long wait1 = 500;
+    boolean ran = false;
 
-    long moveTurret1 = 300;
+    public void strafe(double power, long duration){
+        drive.setDriveMotors(0, power, 0);
+        sleep(duration);
+        drive.setDriveMotors(0, 0, 0);
+        sleep(100);
+    }
 
     public void driveForward(double power, long duration){
         drive.setDriveMotors(power, 0, 0);
@@ -34,156 +34,196 @@ public class BlueAutoClose extends LinearOpMode {
         sleep(100);
     }
 
-    public void turn(double power, long duration){
-        drive.setDriveMotors(0, 0, power);
-        sleep(duration);
-        drive.setDriveMotors(0, 0, 0);
-        sleep(100);
+    public double taToDistance(double ta){
+        double scale = 30665.95; //TODO(vivaan): tune this constant
+        return Math.sqrt(scale / ta);  // Returns CM
     }
 
-    public void strafe(double power, long duration){
-        drive.setDriveMotors(0, power, 0);
-        sleep(duration);
-        drive.setDriveMotors(0, 0, 0);
-        sleep(100);
+    public double calculatePower(double error){
+        double minPowerErrorThreshold = 25;  // In cm
+        double maxPowerErrorThreshold = 100;  // In cm
+        double minPower = 0.2;  // Motor power
+        double maxPower = 0.75;  // Motor power
+
+        if (error < minPowerErrorThreshold){
+            return minPower;
+        } else if (error > maxPowerErrorThreshold){
+            return maxPower;
+        } else {
+            double slope = (maxPower - minPower) / (maxPowerErrorThreshold - minPowerErrorThreshold);
+            double power = (error - minPowerErrorThreshold) * slope + minPower;
+            return power;
+        }
     }
 
-    public void autoAim(int loops, double modifier){
-        int ALLOWED_ERROR = 2;
-        double flywheelSpeed = 0;
-        counts = 0;
-        aimed = false;
-        while(!aimed && counts <= loops){
+    public void driveToTargetDistance(double targetDistance){
+        int invalidCountsInARow = 0;
+        boolean sawAprilTag = false;
+
+        while (invalidCountsInARow < 10) {
             LLResult llResult = drive.limelight.getLatestResult();
-            if (llResult != null && llResult.isValid()) {
-                Pose3D botPose = llResult.getBotpose();
-                double tx = llResult.getTx() + modifier;
-                double ta = llResult.getTa();
-                telemetry.addData("tx", tx);
-                telemetry.update();
-                if (tx < -ALLOWED_ERROR){
-                    double error = Math.abs(tx);
-                    double power = Math.max(error / 40.0, 0.08);
-                    drive.turretCounterClockwise(power);
-                } else if (tx > ALLOWED_ERROR) {
-                    double error = Math.abs(tx);
-                    double power = Math.max(error / 40.0, 0.08);
-                    drive.turretClockwise(power);
+            if (llResult == null || !llResult.isValid()) {
+                if (!sawAprilTag) {
+                    /// Until we see the april tag for the first time, we assume that
+                    /// we are in the start position for the close auto, at the gate.
+                    /// When we see it, we stop moving back at default, and instead assume
+                    /// something went wrong.
+                    drive.setDriveMotors(-0.6, 0, 0);
                 } else {
-                    drive.stopTurret();
-                    aimed = true;
-                    telemetry.addData("tx", tx);
-                    telemetry.update();
+                    invalidCountsInARow++;
+                    sleep(100);
                 }
-
-                counts += 1;
-
-                flywheelSpeed = 25.12398 * Math.pow(ta, 4) - 178.76699 * Math.pow(ta, 3) + 516.00924 * Math.pow(ta, 2)- 820.32747 * ta + 2006.96368;
-                flywheelSpeed -= 50;
-            } else {
-                drive.stopTurret();
-                aimed = true;
-                telemetry.addLine("INVALID LIMELIGHT RESULT");
-                telemetry.update();
+                continue;
             }
-            sleep(10);
+            invalidCountsInARow = 0;
+
+            sawAprilTag = true;
+
+            // Distances are in cm
+            double currentDistance = taToDistance(llResult.getTa());
+            double tolerance = 5;  // In cm
+
+            double error = Math.abs(currentDistance - targetDistance);  // Always positive
+            if (error < tolerance) {
+                drive.setFlywheel(drive.calculatePower(llResult.getTa()));
+                sleep(500);
+                break;
+            }
+
+            boolean driveForward;
+            if (currentDistance > targetDistance){
+                driveForward = true;
+            } else {
+                driveForward = false;
+            }
+
+            double power = calculatePower(error);
+
+            telemetry.addData("Distance(cm)", currentDistance);
+            telemetry.addData("Power", power);
+            telemetry.addData("Error", error);
+            telemetry.addData("Invalids", invalidCountsInARow);
+            telemetry.update();
+
+            if (driveForward) {
+                drive.setDriveMotors(power, 0, 0);
+            } else if (!driveForward) {
+                drive.setDriveMotors(-power, 0, 0);
+            }
         }
 
-        drive.stopTurret();
-        drive.setFlywheel(flywheelSpeed);
-        sleep(150);
+        drive.setDriveMotors(0, 0, 0);
     }
 
-    public void getTx(){
-        LLResult llResult = drive.limelight.getLatestResult();
-        if (llResult != null && llResult.isValid()) {
-            Pose3D botPose = llResult.getBotpose();
-            double tx = llResult.getTx();
-            telemetry.addData("tx", tx);
-            telemetry.update();
+    public double calculateRotation(double error){
+        double minPowerErrorThreshold = 15;  // In degrees
+        double maxPowerErrorThreshold = 45;  // In degrees
+        double minPower = 0.2;  // Motor power
+        double maxPower = 0.5;  // Motor power
+
+        if (error < minPowerErrorThreshold){
+            return minPower;
+        } else if (error > maxPowerErrorThreshold){
+            return maxPower;
+        } else {
+            double slope = (maxPower - minPower) / (maxPowerErrorThreshold - minPowerErrorThreshold);
+            double power = (error - minPowerErrorThreshold) * slope + minPower;
+            return power;
         }
+    }
+
+    public void turnToTargetYaw(double targetYaw){
+        int invalidCountsInARow = 0;
+
+        while (invalidCountsInARow < 10) {
+            // Distances are in cm
+            double currentYaw = drive.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            double tolerance = 1;  // In degrees
+
+            double error = Math.abs(currentYaw - targetYaw);  // Always positive
+            if (error < tolerance) {
+                break;
+            }
+
+            boolean driveClockwise;
+            if (currentYaw > targetYaw){
+                driveClockwise = true;
+            } else {
+                driveClockwise = false;
+            }
+
+            double power = calculateRotation(error);
+
+            telemetry.addData("Distance(cm)", currentYaw);
+            telemetry.addData("Power", power);
+            telemetry.addData("Error", error);
+            telemetry.update();
+
+            if (driveClockwise) {
+                drive.setDriveMotors(0, 0, power);
+            } else if (!driveClockwise) {
+                drive.setDriveMotors(0, 0, -power);
+            }
+        }
+
+        drive.setDriveMotors(0, 0, 0);
     }
 
     public void shootAllBalls(long shootTime){
-        drive.pushBallUp(); // Shoot 3 Balls
+        drive.pushBallUpStrong(); // Shoot 3 Balls
         sleep(shootTime);
         drive.stopBallUp(); // Stop shooting
         drive.setFlywheel(0); // Stop flywheel
         sleep(100);
     }
 
-    public void runOpMode() {
-        // Init code
+    public void runOpMode(){
         drive.init(hardwareMap, 0);
+        while (opModeInInit()){
+            telemetry.addData("Yaw", drive.imu.getRobotYawPitchRollAngles().getYaw());
+            telemetry.update();
+        }
+
         waitForStart();
-        drive.intake();
 
-        // Pre-fed balls
-        driveBackward(0.5, 1800);
+        while (opModeIsActive()) {
+            if (!ran) {
+                drive.intake();
 
-        autoAim(200, 1);
-        sleep(wait1);
+                driveToTargetDistance(155);
+                sleep(200);
+                shootAllBalls(500);
 
-        shootAllBalls(2500);
+                turnToTargetYaw(90);
+                drive.setUpPush(0.2);
+                driveForward(0.2, 2400);
+                sleep(200);
+                drive.stopBallUp();
+                driveBackward(0.2, 2400);
 
-        turn(-0.4, 428);
+                turnToTargetYaw(47);
+                driveToTargetDistance(155);
+                sleep(200);
+                shootAllBalls(500);
 
+                turnToTargetYaw(90);
+                strafe(-0.75, 750);
+                turnToTargetYaw(90);
 
-//      Collect first row of balls
-        driveForward(0.3, 1900);
+                drive.setUpPush(0.2);
+                driveForward(0.2, 2400);
+                sleep(200);
+                drive.stopBallUp();
+                driveBackward(0.2, 2400);
+                strafe(0.75, 750);
 
-        sleep(200);
+                turnToTargetYaw(47);
+                driveToTargetDistance(155);
+                sleep(200);
+                shootAllBalls(500);
+            }
 
-        driveBackward(0.3, 1900);
-
-        drive.turretClockwise(0.4); // Turn turret
-        sleep(moveTurret1);
-        drive.stopTurret(); // Stop turret
-
-        autoAim(200, -2);
-
-        shootAllBalls(2000);
-
-
-        // Collect second row of balls
-        strafe(-0.75, 720);
-
-        turn(0.3, 50);
-
-        driveForward(0.8, 400);
-        driveForward(0.4, 900);
-
-        sleep(200);
-
-        driveBackward(0.6, 1000);
-
-        strafe(0.75, 720);
-
-        autoAim(200, 1);
-
-        shootAllBalls(1700);
-
-
-        // Collect third row of balls
-        strafe(-0.75, 1100);
-
-//        turn(-0.3, 30);
-
-        driveForward(0.8, 400);
-        driveForward(0.4, 1970);
-
-        sleep(200);
-
-        driveBackward(0.6, 1000);
-
-        strafe(0.75, 1350);
-
-        autoAim(200, 2);
-        drive.setFlywheel(1500);
-        sleep(100);
-
-        shootAllBalls(1600);
-
-        strafe(-0.75, 500);
+            ran = true;
+        }
     }
 }

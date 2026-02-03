@@ -42,7 +42,7 @@ public class BlueTeleOp extends LinearOpMode {
             drive.setDriveMotors(forward, strafe, rotate);
 
             if (gamepad1.bWasPressed()){
-                drive.pushBallUp();
+                drive.pushBallUpStrong();
                 sleep(700);
                 drive.stopBallUp();
             }

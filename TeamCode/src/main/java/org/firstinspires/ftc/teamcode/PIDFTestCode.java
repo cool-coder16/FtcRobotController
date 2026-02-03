@@ -15,8 +15,8 @@ public class PIDFTestCode extends LinearOpMode {
     DcMotor servo;
     DcMotor intake;
 
-    public double P = 110;
-    public double F = 13.05;
+    public double P = 89;
+    public double F = 12.35;
 
     public double highVelocity = 2000;
     public double lowVelocity = 1000;
@@ -60,7 +60,7 @@ public class PIDFTestCode extends LinearOpMode {
             }
 
             if (gamepad1.right_bumper){
-                intake.setPower(1.0);
+                intake.setPower(0.75);
             }
 
             if (gamepad1.left_bumper){

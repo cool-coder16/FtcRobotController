@@ -17,9 +17,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.opencv.core.Mat;
+
 public class FinalBench {
-    public DcMotorEx front_right_motor, front_left_motor, back_right_motor, back_left_motor, flywheel;
-    public DcMotor intake_motor, turret, upPush; // Initializes the motors
+    public DcMotorEx front_right_motor, front_left_motor, back_right_motor, back_left_motor, flywheel, turret;
+    public DcMotorEx intake_motor, upPush; // Initializes the motors
 
     public Limelight3A limelight;
 
@@ -34,9 +36,9 @@ public class FinalBench {
         back_right_motor = hwMap.get(DcMotorEx.class, "backright"); // Assigns motor to the one in the configuration called "backright"
         back_left_motor = hwMap.get(DcMotorEx.class, "backleft"); // Assigns motor to the one in the configuration called "backleft"
         flywheel = hwMap.get(DcMotorEx.class, "flywheel"); // Assigns motor to the one in the configuration called "flywheel"
-        intake_motor = hwMap.get(DcMotor.class, "intake"); // Assigns motor to the one in the configuration called "intake"
-        upPush = hwMap.get(DcMotor.class, "upPush"); // Assigns motor to the one in the configuration called "upPush"
-        turret = hwMap.get(DcMotor.class, "turret"); // Assigns motor to the one in the configuration called "turret"
+        intake_motor = hwMap.get(DcMotorEx.class, "intake"); // Assigns motor to the one in the configuration called "intake"
+        upPush = hwMap.get(DcMotorEx.class, "upPush"); // Assigns motor to the one in the configuration called "upPush"
+        turret = hwMap.get(DcMotorEx.class, "turret"); // Assigns motor to the one in the configuration called "turret"
         imu = hwMap.get(IMU.class, "IMU");
 
         // Reverses
@@ -44,17 +46,19 @@ public class FinalBench {
         back_left_motor.setDirection(DcMotorSimple.Direction.REVERSE); // Auto-reverses the drive motor
         flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         upPush.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake_motor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Motor SetModes
         front_left_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Sets the mode, required for it to work. It means that it has an encoder.
         back_left_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         front_right_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         back_right_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intake_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         upPush.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
 
         // Motor ZeroModes
         front_left_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -64,7 +68,7 @@ public class FinalBench {
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //PF (PIDF)
-        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(300, 0, 0, 13.05);
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(89, 0, 0, 12.35);
         flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
         //Start Intake
@@ -119,8 +123,16 @@ public class FinalBench {
         turret.setPower(0); // stops it
     }
 
-    public void pushBallUp(){
-        upPush.setPower(1); // Push the ball up, forever until stopped
+    public void pushBallUpStrong(){
+        upPush.setPower(0.5); // Push the ball up, forever until stopped
+    }
+
+    public void pushBallUpWeak(){
+        upPush.setPower(0.5);
+    }
+
+    public void setUpPush(double power){
+        upPush.setPower(power);
     }
 
     public void stopBallUp(){
@@ -128,7 +140,7 @@ public class FinalBench {
     }
 
     public void pushBallDown(){
-        upPush.setPower(-1); // pushes ball down
+        upPush.setPower(-0.8); // pushes ball down
     }
 
     public void intake(){
@@ -145,5 +157,9 @@ public class FinalBench {
 
     public void setFlywheel(double velocity){
         flywheel.setVelocity(velocity); // Allows you to change the flywheel power.
+    }
+
+    public double calculatePower(double ta){
+        return 91.14247 * Math.pow(ta, 4) - 587.4294 * Math.pow(ta , 3) + 1310.65542 * Math.pow(ta, 2) - 1298.56367 * ta + 1879.80641;
     }
 }
