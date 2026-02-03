@@ -103,7 +103,7 @@ public class RedAutoClose extends LinearOpMode {
 
              // Distances are in cm
             double currentDistance = taToDistance(llResult.getTa());
-            double tolerance = 5;  // In cm
+            double tolerance = 3;  // In cm
 
             double error = Math.abs(currentDistance - targetDistance);  // Always positive
             if (error < tolerance) {
@@ -211,7 +211,7 @@ public class RedAutoClose extends LinearOpMode {
         drive.setFlywheel(1500);
 
         turnToTargetYaw(-45);
-        driveToTargetDistance(152);
+        driveToTargetDistance(149);
         sleep(200);
         shootAllBalls(500);
 
@@ -221,7 +221,7 @@ public class RedAutoClose extends LinearOpMode {
         doubleDriveBackward(0.4, 0.2, 1181, 368);
 
         turnToTargetYaw(-47);
-        driveToTargetDistance(155);
+        driveToTargetDistance(160);
         sleep(200);
         shootAllBalls(500);
 
