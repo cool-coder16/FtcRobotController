@@ -7,6 +7,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.FinalBench;
 
+// Close Auto for Red
+// TODO:
+    // Fix the auto-distance
+
 @Autonomous(group = "Autonomous")
 public class RedAutoClose extends LinearOpMode {
     FinalBench drive = new FinalBench();
