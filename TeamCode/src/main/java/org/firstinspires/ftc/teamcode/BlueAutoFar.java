@@ -99,7 +99,7 @@ public class BlueAutoFar extends LinearOpMode {
     }
 
     public void shootAllBalls(long shootTime){
-        drive.pushBallUpWeak(); // Shoot 3 Balls
+        drive.setFlywheel(1.0); // Shoot 3 Balls
         sleep(shootTime);
         drive.stopBallUp(); // Stop shooting
         drive.setFlywheel(0); // Stop flywheel

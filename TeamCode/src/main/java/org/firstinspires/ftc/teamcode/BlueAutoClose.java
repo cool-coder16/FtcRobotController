@@ -71,7 +71,7 @@ public class BlueAutoClose extends LinearOpMode {
                     drive.setDriveMotors(-0.6, 0, 0);
                 } else {
                     invalidCountsInARow++;
-                    sleep(100);
+                    sleep(100);;
                 }
                 continue;
             }
@@ -81,12 +81,11 @@ public class BlueAutoClose extends LinearOpMode {
 
             // Distances are in cm
             double currentDistance = taToDistance(llResult.getTa());
-            double tolerance = 5;  // In cm
+            double tolerance = 3;  // In cm
 
             double error = Math.abs(currentDistance - targetDistance);  // Always positive
             if (error < tolerance) {
-                drive.setFlywheel(drive.calculatePower(llResult.getTa()));
-                sleep(500);
+                drive.setFlywheel(drive.calculatePower(llResult.getTa()) - 70);
                 break;
             }
 
@@ -113,12 +112,35 @@ public class BlueAutoClose extends LinearOpMode {
         }
 
         drive.setDriveMotors(0, 0, 0);
+        sleep(500);
+    }
+
+    public void doubleDriveBackward(double power1, double power2, long duration1, long duration2){
+        drive.setDriveMotors(-power1, 0, 0);
+        sleep(duration1);
+        drive.setDriveMotors(-power2, 0, 0);
+        sleep(duration2);
+        drive.setDriveMotors(0, 0, 0);
+        sleep(100);
+    }
+
+    public void doubleDriveForward(double power1, double power2, long duration1, long duration2, boolean transitionOn){
+        drive.setDriveMotors(power1, 0, 0);
+        sleep(duration1);
+        if (transitionOn){
+            drive.setUpPush(0.2);
+        }
+        drive.setDriveMotors(power2, 0, 0);
+        sleep(duration2);
+        drive.setDriveMotors(0, 0, 0);
+        sleep(100);
+        drive.stopBallUp();
     }
 
     public double calculateRotation(double error){
-        double minPowerErrorThreshold = 15;  // In degrees
+        double minPowerErrorThreshold = 10;  // In degrees
         double maxPowerErrorThreshold = 45;  // In degrees
-        double minPower = 0.2;  // Motor power
+        double minPower = 0.15;  // Motor power
         double maxPower = 0.5;  // Motor power
 
         if (error < minPowerErrorThreshold){
@@ -169,11 +191,11 @@ public class BlueAutoClose extends LinearOpMode {
         drive.setDriveMotors(0, 0, 0);
     }
 
-    public void shootAllBalls(long shootTime){
-        drive.pushBallUpStrong(); // Shoot 3 Balls
+    public void shootAllBalls(long shootTime) {
+        drive.setUpPush(0.7); // Shoot 3 Balls
         sleep(shootTime);
         drive.stopBallUp(); // Stop shooting
-        drive.setFlywheel(0); // Stop flywheel
+//        drive.setFlywheel(0); // Stop flywheel
         sleep(100);
     }
 
@@ -185,45 +207,45 @@ public class BlueAutoClose extends LinearOpMode {
         }
 
         waitForStart();
+        drive.intake();
+        drive.setFlywheel(1500);
 
-        while (opModeIsActive()) {
-            if (!ran) {
-                drive.intake();
 
-                driveToTargetDistance(155);
-                sleep(200);
-                shootAllBalls(500);
 
-                turnToTargetYaw(90);
-                drive.setUpPush(0.2);
-                driveForward(0.2, 2400);
-                sleep(200);
-                drive.stopBallUp();
-                driveBackward(0.2, 2400);
+        turnToTargetYaw(45);
+        driveToTargetDistance(155);
+        sleep(200);
+        shootAllBalls(1000);
 
-                turnToTargetYaw(47);
-                driveToTargetDistance(155);
-                sleep(200);
-                shootAllBalls(500);
+        turnToTargetYaw(90);
+        doubleDriveForward(0.4, 0.2, 680, 1670, false);
+        sleep(200);
+        doubleDriveBackward(0.4, 0.2, 1181, 368);
 
-                turnToTargetYaw(90);
-                strafe(-0.75, 750);
-                turnToTargetYaw(90);
+        turnToTargetYaw(45);
+        driveToTargetDistance(160);
+        sleep(200);
+        shootAllBalls(1000);
 
-                drive.setUpPush(0.2);
-                driveForward(0.2, 2400);
-                sleep(200);
-                drive.stopBallUp();
-                driveBackward(0.2, 2400);
-                strafe(0.75, 750);
+        turnToTargetYaw(90);
+        strafe(-0.75, 680);
+        turnToTargetYaw(90);
 
-                turnToTargetYaw(47);
-                driveToTargetDistance(155);
-                sleep(200);
-                shootAllBalls(500);
-            }
+        doubleDriveForward(0.4, 0.2, 680, 1670, false);
+        sleep(200);
+        doubleDriveBackward(0.4, 0.2, 1181, 368);
+        strafe(0.75, 720);
 
-            ran = true;
-        }
+        turnToTargetYaw(45);
+        driveToTargetDistance(155);
+        sleep(200);
+        shootAllBalls(1000);
+
+        turnToTargetYaw(90);
+        strafe(-0.75, 1000);
+        turnToTargetYaw(90);
+
+        doubleDriveForward(0.4, 0.2, 680, 1670, false);
+        sleep(200);
     }
 }

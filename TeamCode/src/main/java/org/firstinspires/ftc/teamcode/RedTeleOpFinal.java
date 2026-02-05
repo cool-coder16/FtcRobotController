@@ -16,6 +16,11 @@ public class RedTeleOpFinal extends LinearOpMode {
     boolean rtPressed = false, ltPressed = false, tracking = false; // A way to make it so that the Right-Trigger is only pressed once
     int tracks = 0;
     double velocity;
+    boolean transitionOn = false;
+    double onTransitionTime = Double.POSITIVE_INFINITY;
+    boolean yPressed = false;
+    boolean transitionButtonPressed = false;
+
     String instructions =
             "Gamepad 1 (start + a):\n" +
                     "* Drive: Joysticks\n" +
@@ -29,6 +34,23 @@ public class RedTeleOpFinal extends LinearOpMode {
                     "* Move Turret: Dpad right + left\n" +
                     "----------------------------"; // The written instructions on the screen, don't change
 
+    public double calculateTurretPower(double error){
+        double minPowerErrorThreshold = 20;  // In degrees
+        double maxPowerErrorThreshold = 50;  // In degrees
+        double minPower = 0.1;  // Motor power
+        double maxPower = 0.5;  // Motor power
+
+        if (error < minPowerErrorThreshold){
+            return minPower;
+        } else if (error > maxPowerErrorThreshold){
+            return maxPower;
+        } else {
+            double slope = (maxPower - minPower) / (maxPowerErrorThreshold - minPowerErrorThreshold);
+            double power = (error - minPowerErrorThreshold) * slope + minPower;
+            return power;
+        }
+    }
+
     @Override
     public void runOpMode() {
         drive.init(hardwareMap, 1); // Puts the hardware devices from the current configuration into the drive, uses Limelight Pipeline 1: red
@@ -36,6 +58,7 @@ public class RedTeleOpFinal extends LinearOpMode {
 
 
         waitForStart(); // This is for the LinearOpMode, starts after you press the Start button on the Driver Station
+        resetRuntime();
         drive.intake();
 
         while (opModeIsActive()) { // Loops really fast until you stop the code
@@ -59,11 +82,45 @@ public class RedTeleOpFinal extends LinearOpMode {
 
             drive.setDriveMotors(forward, strafe, rotate); // Uses the drive function, which sends the values to the drive motors
 
-            if (gamepad2.b) { // Checking if b was just pressed
-                drive.pushBallUpStrong();
-            } else if (gamepad2.y) {
+//            if (gamepad2.b) { // Checking if b was just pressed
+//                drive.pushBallUpStrong();
+//            } else
+
+            if (gamepad2.b){
                 drive.setUpPush(0.9);
+                transitionButtonPressed = true;
+            } else if (gamepad2.right_bumper){
+                drive.setUpPush(0.75);
+                transitionButtonPressed = true;
+            } else if (gamepad2.left_bumper){
+                drive.setUpPush(0.6);
+                transitionButtonPressed = true;
+            } else if (!gamepad2.y) {
+                transitionButtonPressed = false;
+                yPressed = false;
+                transitionOn = false;
+                onTransitionTime = Double.POSITIVE_INFINITY;
+            } else if (gamepad2.y && !yPressed) {
+                transitionButtonPressed = false;
+                transitionOn = true;
+                onTransitionTime = getRuntime();
+                yPressed = true;
             } else {
+                transitionButtonPressed = false;
+                drive.setUpPush(0);
+            }
+
+            if (transitionOn){
+                transitionButtonPressed = false;
+                double timePassed = getRuntime() - onTransitionTime;
+                if (timePassed <= 0.2) {
+                    drive.setUpPush(0.9);
+                } else if (timePassed < 0.8){
+                    drive.stopBallUp();
+                } else {
+                    onTransitionTime = getRuntime();
+                }
+            } else if (!transitionButtonPressed){
                 drive.stopBallUp();
             }
 
@@ -111,7 +168,13 @@ public class RedTeleOpFinal extends LinearOpMode {
             }
 
             if (shooting) {
-                drive.setFlywheel(velocity); // If we are shooting, it turns on the flywheel
+                if (drive.flywheel.getVelocity() - velocity > 200){
+                    drive.setFlywheel(0);
+                } else if (velocity - drive.flywheel.getVelocity() > 200){
+                    drive.setFlywheel(2400);
+                } else {
+                    drive.setFlywheel(velocity); // If we are shooting, it turns on the flywheel
+                }
             } else {
                 drive.setFlywheel(0); // Otherwise, turns it off
             }
@@ -127,7 +190,7 @@ public class RedTeleOpFinal extends LinearOpMode {
             LLResult llResult = drive.limelight.getLatestResult();
             if (llResult != null && llResult.isValid()) {
                 Pose3D botPose = llResult.getBotpose();
-                double tx = llResult.getTx() + 2;
+                double tx = llResult.getTx();
                 double ta = llResult.getTa();
                 telemetry.addLine("TARGET DETECTED");
                 telemetry.addData("Target X", llResult.getTx());
@@ -140,21 +203,21 @@ public class RedTeleOpFinal extends LinearOpMode {
                 velocity = drive.calculatePower(ta) + manual_velocity;
                 if (ta >= 0.5) {
                     velocity -= 70;
+                } else {
+                    velocity -= 40;
                 }
 
                 // Turret Clockwise subtracts from tx
                 /// AUTO AIM
-                double allowedErrorDegrees = 1;
+                double allowedErrorDegrees = 2;
                 double error = 0, power = 0;
                 if (tracking) {
-                    if (tx > allowedErrorDegrees && drive.turret.getCurrentPosition() < 450) {
+                    if (tx > allowedErrorDegrees && drive.turret.getCurrentPosition() < 450) { //  && drive.turret.getCurrentPosition() < 450
                         error = Math.abs(tx - allowedErrorDegrees);
-                        power = Math.max(error/25, 0.1);
-                        drive.turretClockwise(power);
-                    } else if (tx < -allowedErrorDegrees && drive.turret.getCurrentPosition() > -450) {
+                        drive.turretClockwise(calculateTurretPower(error));
+                    } else if (tx < -allowedErrorDegrees && drive.turret.getCurrentPosition() > -450) { //  && drive.turret.getCurrentPosition() > -450
                         error = Math.abs(tx + allowedErrorDegrees);
-                        power = Math.max(error/25, 0.1);
-                        drive.turretCounterClockwise(power);
+                        drive.turretCounterClockwise(calculateTurretPower(error));
                     } else {
                         drive.stopTurret();
                     }

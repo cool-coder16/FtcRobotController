@@ -27,7 +27,6 @@ public class FinalBench {
 
     public IMU imu;
     public double intakeSpeed = 1; // Sets the variable speed of the intake to 1
-    public double turretSpeed = 0.5; //CHANGEABLE: Change this to change the speed that the turret moves - Needs calibration
 
     public void init(HardwareMap hwMap, int pipeline){
         // MOTOR + SERVO Initialization
@@ -124,11 +123,11 @@ public class FinalBench {
     }
 
     public void pushBallUpStrong(){
-        upPush.setPower(0.5); // Push the ball up, forever until stopped
+        upPush.setPower(1.0); // Push the ball up, forever until stopped
     }
 
     public void pushBallUpWeak(){
-        upPush.setPower(0.5);
+        upPush.setPower(0.6);
     }
 
     public void setUpPush(double power){
@@ -140,7 +139,7 @@ public class FinalBench {
     }
 
     public void pushBallDown(){
-        upPush.setPower(-0.8); // pushes ball down
+        upPush.setPower(-0.6); // pushes ball down
     }
 
     public void intake(){
@@ -160,6 +159,6 @@ public class FinalBench {
     }
 
     public double calculatePower(double ta){
-        return 91.14247 * Math.pow(ta, 4) - 587.4294 * Math.pow(ta , 3) + 1310.65542 * Math.pow(ta, 2) - 1298.56367 * ta + 1879.80641;
+        return 91.14247 * Math.pow(ta, 4) - 587.4294 * Math.pow(ta , 3) + 1310.65542 * Math.pow(ta, 2) - 1298.56367 * ta + 1909.80641;
     }
 }
