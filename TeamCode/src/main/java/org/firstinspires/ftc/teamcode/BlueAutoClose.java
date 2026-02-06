@@ -247,5 +247,7 @@ public class BlueAutoClose extends LinearOpMode {
 
         doubleDriveForward(0.4, 0.2, 680, 1670, false);
         sleep(200);
+
+        stop();
     }
 }
